@@ -1,0 +1,31 @@
+<svg width="400" height="100" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="shimmer" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.1" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1" />
+      <animate attributeName="x1" from="-1" to="1" dur="3s" repeatCount="indefinite" />
+      <animate attributeName="x2" from="0" to="2" dur="3s" repeatCount="indefinite" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Pulse Diamond -->
+  <g filter="url(#glow)">
+    <rect x="50" y="25" width="40" height="40" rx="10" transform="rotate(45 70 45)" fill="#6366f1">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite" />
+    </rect>
+    <rect x="55" y="30" width="30" height="30" rx="6" transform="rotate(45 70 45)" fill="#a855f7" opacity="0.5" />
+  </g>
+
+  <!-- Shimmer Text -->
+  <text x="115" y="68" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="white" style="letter-spacing: -2px;">
+    PRISM
+  </text>
+  <text x="115" y="68" font-family="Arial, sans-serif" font-size="58" font-weight="900" fill="url(#shimmer)" style="letter-spacing: -2px;">
+    PRISM
+  </text>
+</svg>
