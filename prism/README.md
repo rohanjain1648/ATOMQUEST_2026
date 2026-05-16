@@ -50,7 +50,8 @@ Modern organizations struggle with fragmented, uninspiring performance managemen
 | **Phase 1** | Goal Creation → Submission → Manager Approval → Lock | ✅ Complete |
 | **Phase 2** | Quarterly Achievement Tracking → Score Computation → Manager Check-ins | ✅ Complete |
 | **Phase 3** | Analytics Dashboard → Escalation Engine → Audit Logs | ✅ Complete |
-| **Bonus** | Azure AD SSO Simulation → Export → Notifications Architecture | ✅ Complete |
+| **Bonus** | Azure AD SSO Simulation → CSV Export Engine → MS Teams Notifications | ✅ Complete |
+| **Interactivity** | Real-time Dashboard Filters → Multi-Department Drill-down | ✅ Complete |
 
 ---
 
@@ -62,6 +63,7 @@ Modern organizations struggle with fragmented, uninspiring performance managemen
 | **Live BRD Scoring Engine** | All 4 BRD formulas (Min, Max, Timeline, Zero-based) computed in real-time as employees update achievements |
 | **Circular Weightage Tracker** | Animated SVG ring that fills dynamically as employees distribute goal weights, turning validation into visual feedback |
 | **Multi-Step SSO Simulation** | Pixel-perfect Microsoft Entra ID login recreation that demonstrates enterprise-readiness |
+| **Shared Goal Engine** | Manager-driven KPI push with read-only target locking and departmental alignment |
 | **Automated Governance** | Built-in escalation engine with L1/L2/L3 severity tracking and tamper-proof audit logs |
 
 ---
@@ -80,6 +82,7 @@ Modern organizations struggle with fragmented, uninspiring performance managemen
 | Manager inline editing | Edit targets/weightage before approval |
 | Approve & Lock | Immutable lock with timestamp |
 | Return for rework | Mandatory comment modal |
+| Shared Goal Push | Manager pushes KPI to multiple employees (Read-only targets) |
 
 ### Phase 2 — Achievement Tracking
 | Feature | Implementation |
@@ -99,7 +102,8 @@ Modern organizations struggle with fragmented, uninspiring performance managemen
 | Department comparison | Horizontal bar chart with color-coded scores |
 | Escalation engine | L1/L2/L3 multi-level tracking dashboard |
 | Audit log viewer | Immutable event ledger with timestamps |
-| PDF/Excel export | Export button architecture |
+| Real-time Filters | Filter entire dashboard by Department & Thrust Area |
+| CSV Export Engine | Full achievement report generator with all targets/actuals |
 
 ---
 
@@ -413,9 +417,11 @@ src/app/
     │
     ├── team/
     │   ├── page.tsx                      # Manager Team Dashboard
+    │   ├── TeamClient.tsx                # Interactive Shared Goal Push Modal
     │   ├── [userId]/page.tsx            # Goal Sheet Review + Approve
     │   └── checkin/[userId]/page.tsx    # Check-in Feedback Module
     │
+    ├── settings/page.tsx                # Profile, Notification & SSO Settings
     └── analytics/page.tsx               # Analytics + Governance + Audit
 ```
 
@@ -698,6 +704,6 @@ prism/
 ---
 
 <div align="center">
-  <p><strong>Built with ❤️ for AtomQuest Hackathon 1.0</strong></p>
+  <p><strong>Built for AtomQuest Hackathon 1.0</strong></p>
   <p><em>PRISM — Where Performance Meets Premium</em></p>
 </div>
