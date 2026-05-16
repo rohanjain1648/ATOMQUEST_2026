@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// === Core Models ===
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  role          String    @default("EMPLOYEE")
+  department    String
+  managerId     String?
+  manager       User?     @relation("ManagerReports", fields: [managerId], references: [id])
+  reports       User[]    @relation("ManagerReports")
+  goalSheets    GoalSheet[]
+  checkIns      CheckIn[]
+  auditLogs     AuditLog[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model GoalCycle {
+  id            String    @id @default(cuid())
+  name          String               // "FY 2026-27"
+  startDate     DateTime
+  endDate       DateTime
+  status        String    @default("ACTIVE")
+  goalSheets    GoalSheet[]
+  checkInWindows CheckInWindow[]
+  createdAt     DateTime  @default(now())
+}
+
+model CheckInWindow {
+  id            String    @id @default(cuid())
+  cycleId       String
+  cycle         GoalCycle @relation(fields: [cycleId], references: [id])
+  quarter       String
+  opensAt       DateTime
+  closesAt      DateTime
+  checkIns      CheckIn[]
+}
+
+model GoalSheet {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  cycleId       String
+  cycle         GoalCycle @relation(fields: [cycleId], references: [id])
+  status        String    @default("DRAFT")
+  submittedAt   DateTime?
+  approvedAt    DateTime?
+  lockedAt      DateTime?
+  goals         Goal[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([userId, cycleId])
+}
+
+model Goal {
+  id              String    @id @default(cuid())
+  goalSheetId     String
+  goalSheet       GoalSheet @relation(fields: [goalSheetId], references: [id])
+  thrustArea      String
+  title           String
+  description     String?
+  uom             String
+  target          Float
+  weightage       Int               // 10-100, sum must = 100
+  isShared        Boolean   @default(false)
+  sharedFromId    String?           // links to parent goal
+  sharedFrom      Goal?     @relation("SharedGoals", fields: [sharedFromId], references: [id])
+  sharedTo        Goal[]    @relation("SharedGoals")
+  achievements    Achievement[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Achievement {
+  id            String    @id @default(cuid())
+  goalId        String
+  goal          Goal      @relation(fields: [goalId], references: [id])
+  quarter       String
+  actual        Float
+  status        String    @default("NOT_STARTED")
+  score         Float?              // System-computed
+  updatedAt     DateTime  @updatedAt
+}
+
+model CheckIn {
+  id            String    @id @default(cuid())
+  windowId      String
+  window        CheckInWindow @relation(fields: [windowId], references: [id])
+  managerId     String
+  manager       User      @relation(fields: [managerId], references: [id])
+  employeeId    String
+  comment       String
+  createdAt     DateTime  @default(now())
+}
+
+model AuditLog {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  entityType    String              // "Goal", "GoalSheet", etc.
+  entityId      String
+  action        String              // "EDIT", "UNLOCK", "APPROVE"
+  before        String?             // JSON string
+  after         String?             // JSON string
+  createdAt     DateTime  @default(now())
+}
+
+model EscalationRule {
+  id            String    @id @default(cuid())
+  triggerEvent  String
+  daysThreshold Int
+  escalateTo    String              // "MANAGER" | "SKIP_LEVEL" | "HR"
+  isActive      Boolean   @default(true)
+}
+
+model EscalationLog {
+  id            String    @id @default(cuid())
+  ruleId        String
+  targetUserId  String
+  level         Int                 // escalation level 1, 2, 3
+  notifiedAt    DateTime  @default(now())
+  resolved      Boolean   @default(false)
+}
