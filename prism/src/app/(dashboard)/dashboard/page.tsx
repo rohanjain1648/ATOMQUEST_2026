@@ -1,20 +1,57 @@
 import Link from 'next/link';
-import { Target, TrendingUp, AlertCircle, Clock } from 'lucide-react';
+import { Target, TrendingUp, AlertCircle, Clock, CalendarCheck, CalendarClock } from 'lucide-react';
+import { prisma } from '@/lib/prisma';
 
-export default function Dashboard() {
+export const dynamic = 'force-dynamic';
+
+export default async function Dashboard() {
+  // Fetch real data
+  const cycle = await prisma.goalCycle.findFirst({ where: { status: 'ACTIVE' }, include: { checkInWindows: true } });
+  const sheet = await prisma.goalSheet.findFirst({
+    where: { userId: 'emp-priya' },
+    include: { goals: { include: { achievements: true } } },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  // Compute weighted score
+  let weightedScore = 0;
+  const goals = sheet?.goals || [];
+  for (const goal of goals) {
+    const ach = goal.achievements.find(a => a.quarter === 'Q1');
+    if (ach?.score) weightedScore += (ach.score * goal.weightage) / 100;
+  }
+
+  // Determine current check-in window status
+  const now = new Date();
+  const windows = cycle?.checkInWindows || [];
+  let activeWindow = null;
+  let nextWindow = null;
+  
+  for (const win of windows) {
+    if (now >= win.opensAt && now <= win.closesAt) {
+      activeWindow = win;
+    } else if (now < win.opensAt && (!nextWindow || win.opensAt < nextWindow.opensAt)) {
+      nextWindow = win;
+    }
+  }
+
+  const submissionDeadline = cycle ? new Date(cycle.startDate.getTime() + 30 * 24 * 60 * 60 * 1000) : null;
+  const daysUntilDeadline = submissionDeadline ? Math.max(0, Math.ceil((submissionDeadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))) : 14;
+
   return (
     <div className="animate-fade-in-up">
       <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-lg)' }}>
         <div>
           <h1 style={{ fontSize: '2rem', marginBottom: 'var(--space-xs)' }}>Welcome back, Rohan</h1>
-          <p style={{ color: 'rgba(255,255,255,0.6)' }}>Here is your performance overview for FY 2026-27.</p>
+          <p style={{ color: 'rgba(255,255,255,0.6)' }}>Here is your performance overview for {cycle?.name || 'FY 2026-27'}.</p>
         </div>
         <Link href="/goals/create" className="btn btn-primary">
           + Create Goal Sheet
         </Link>
       </div>
 
-      <div className="grid grid-cols-3 gap-md" style={{ marginBottom: 'var(--space-xl)' }}>
+      {/* KPI Cards Row */}
+      <div className="grid grid-cols-3 gap-md" style={{ marginBottom: 'var(--space-md)' }}>
         <div className="glass-card">
           <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
             <div style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Goal Submission Status</div>
@@ -22,10 +59,10 @@ export default function Dashboard() {
               <AlertCircle size={16} />
             </div>
           </div>
-          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>Pending</h2>
+          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{sheet?.status === 'LOCKED' ? 'Locked ✓' : sheet?.status || 'Pending'}</h2>
           <div className="flex items-center gap-xs" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
             <Clock size={12} />
-            Due in 14 days
+            {sheet?.status === 'LOCKED' ? `Approved ${sheet.approvedAt ? new Date(sheet.approvedAt).toLocaleDateString() : ''}` : `Due in ${daysUntilDeadline} days`}
           </div>
         </div>
 
@@ -36,9 +73,9 @@ export default function Dashboard() {
               <TrendingUp size={16} />
             </div>
           </div>
-          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>0%</h2>
+          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{weightedScore.toFixed(0)}%</h2>
           <div className="progress-container">
-            <div className="progress-bar" style={{ width: '0%' }}></div>
+            <div className="progress-bar" style={{ width: `${Math.min(weightedScore, 100)}%` }}></div>
           </div>
         </div>
 
@@ -47,13 +84,59 @@ export default function Dashboard() {
             <div style={{ color: 'rgba(255,255,255,0.9)', fontWeight: 500 }}>Active Cycle</div>
             <Target size={16} color="white" />
           </div>
-          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>FY 26-27</h2>
+          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{cycle?.name || 'FY 26-27'}</h2>
           <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.8)' }}>
             Goal setting window closes May 30
           </div>
         </div>
       </div>
 
+      {/* Check-in Window Status (BRD Section 2.3) */}
+      <div className="glass-panel" style={{ padding: 'var(--space-lg)', marginBottom: 'var(--space-md)' }}>
+        <h3 style={{ fontSize: '1.2rem', marginBottom: 'var(--space-md)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <CalendarClock size={20} color="var(--accent-info)" /> Quarterly Check-in Schedule
+        </h3>
+        <div className="grid grid-cols-5 gap-sm">
+          {[
+            { quarter: 'Phase 1', label: 'Goal Setting', month: 'May', opens: '2026-05-01', closes: '2026-05-31' },
+            { quarter: 'Q1', label: 'Progress Update', month: 'July', opens: '2026-07-01', closes: '2026-07-31' },
+            { quarter: 'Q2', label: 'Progress Update', month: 'October', opens: '2026-10-01', closes: '2026-10-31' },
+            { quarter: 'Q3', label: 'Progress Update', month: 'January', opens: '2027-01-01', closes: '2027-01-31' },
+            { quarter: 'Q4', label: 'Final Capture', month: 'March', opens: '2027-03-01', closes: '2027-04-15' },
+          ].map((win) => {
+            const winOpens = new Date(win.opens);
+            const winCloses = new Date(win.closes);
+            const isActive = now >= winOpens && now <= winCloses;
+            const isPast = now > winCloses;
+            const isFuture = now < winOpens;
+
+            return (
+              <div
+                key={win.quarter}
+                className="glass-card"
+                style={{
+                  padding: 'var(--space-md)',
+                  textAlign: 'center',
+                  border: isActive ? '1px solid var(--accent-success)' : '1px solid rgba(255,255,255,0.05)',
+                  boxShadow: isActive ? '0 0 20px rgba(16, 185, 129, 0.2)' : 'none',
+                  opacity: isPast ? 0.5 : 1,
+                }}
+              >
+                <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: isActive ? 'var(--accent-success)' : 'rgba(255,255,255,0.4)', marginBottom: '4px', fontWeight: 700 }}>
+                  {isActive ? '● ACTIVE' : isPast ? '✓ DONE' : '○ UPCOMING'}
+                </div>
+                <div style={{ fontWeight: 700, fontSize: '1.1rem', marginBottom: '2px' }}>{win.quarter}</div>
+                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>{win.label}</div>
+                <div style={{ fontSize: '0.75rem', color: isActive ? 'var(--accent-info)' : 'rgba(255,255,255,0.3)', marginTop: '6px' }}>
+                  {win.month}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Action Required */}
       <div className="glass-panel" style={{ padding: 'var(--space-lg)' }}>
         <h3 style={{ fontSize: '1.2rem', marginBottom: 'var(--space-md)' }}>Action Required</h3>
         <div style={{ 
@@ -70,7 +153,7 @@ export default function Dashboard() {
               <Target size={20} />
             </div>
             <div>
-              <div style={{ fontWeight: 600, marginBottom: '4px' }}>Submit your Goal Sheet for FY 2026-27</div>
+              <div style={{ fontWeight: 600, marginBottom: '4px' }}>Submit your Goal Sheet for {cycle?.name || 'FY 2026-27'}</div>
               <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>You must define and submit your goals for manager approval.</div>
             </div>
           </div>
