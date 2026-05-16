@@ -1,7 +1,6 @@
 <div align="center">
   <br/>
-  <img src="./header.svg" width="400" alt="PRISM Logo" />
-  <p><strong>Performance · Recognition · Insights · Strategy · Metrics</strong></p>
+  <img src="https://readme-typing-svg.herokuapp.com/?font=Outfit&weight=800&size=50&duration=3000&pause=1000&color=6366F1&center=true&vCenter=true&width=800&height=80&lines=PRISM;Performance;Recognition;Insights;Strategy;Metrics" alt="Typing SVG" />
   <p>An ultra-premium, enterprise-grade Goal Setting & Tracking Portal<br/>built for <strong>AtomQuest Hackathon 1.0</strong></p>
   <br/>
   <img src="https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js" alt="Next.js"/>
