@@ -1,8 +1,2 @@
-import { PrismaClient } from '@prisma/client';
-
-try {
-  const prisma = new PrismaClient();
-  console.log('Prisma initialized');
-} catch (e) {
-  console.error('Error initializing Prisma:', e);
-}
+import { prisma } from './src/lib/prisma';
+console.log('Successfully initialized Prisma with better-sqlite3 adapter!');
