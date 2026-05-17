@@ -1,2 +1,10 @@
-import { prisma } from './src/lib/prisma';
-console.log('Successfully initialized Prisma with better-sqlite3 adapter!');
+import { PrismaClient } from '@prisma/client';
+try {
+  // Try initializing without adapter
+  const prisma = new PrismaClient({
+    datasourceUrl: 'file:./dev.db'
+  });
+  console.log("SUCCESS");
+} catch(e) {
+  console.error("ERROR:", e);
+}
