@@ -643,7 +643,7 @@ graph LR
 ```bash
 # 1. Clone the repository
 git clone https://github.com/rohanjain1648/ATOMQUEST_2026.git
-cd ATOMQUEST_2026/prism
+cd ATOMQUEST_2026
 
 # 2. Install dependencies
 npm install
@@ -668,7 +668,7 @@ npm run dev
 ## 21. Project Structure
 
 ```
-prism/
+ATOMQUEST_2026/
 ├── prisma/
 │   ├── schema.prisma              # 12-model database schema
 │   └── dev.db                     # SQLite database file
