@@ -1,8 +1,19 @@
 
 import { prisma } from '@/lib/prisma';
 import AnalyticsClient from './AnalyticsClient';
+import { Prisma } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
+
+type EmployeeWithSheets = Prisma.UserGetPayload<{
+  include: {
+    goalSheets: {
+      include: {
+        goals: { include: { achievements: true } }
+      }
+    }
+  }
+}>;
 
 export default async function AnalyticsPage() {
   // Fetch users (Employees)
@@ -29,7 +40,7 @@ export default async function AnalyticsPage() {
   const thrustAttainmentMap = new Map<string, { actual: number; target: number; count: number }>();
 
   // 1. Calculate KPIs, Department Scores, and Distribution
-  employees.forEach(emp => {
+  employees.forEach((emp: EmployeeWithSheets) => {
     const sheet = emp.goalSheets[0];
     if (sheet?.status === 'LOCKED') lockedSheets++;
 
@@ -43,7 +54,7 @@ export default async function AnalyticsPage() {
         const thrustData = thrustAttainmentMap.get(goal.thrustArea)!;
         thrustData.count++;
 
-        const ach = goal.achievements.find(a => a.quarter === 'Q1');
+        const ach = goal.achievements.find((a: { quarter: string; status: string; score: number | null }) => a.quarter === 'Q1');
         if (ach) {
           if (ach.status === 'COMPLETED') statusDistribution.COMPLETED++;
           else if (ach.status === 'ON_TRACK') statusDistribution.ON_TRACK++;
@@ -89,7 +100,7 @@ export default async function AnalyticsPage() {
   const allGoals = await prisma.goal.findMany();
   const thrustMap = new Map<string, number>();
   let totalWeight = 0;
-  allGoals.forEach(g => {
+  allGoals.forEach((g: { thrustArea: string; weightage: number }) => {
     const current = thrustMap.get(g.thrustArea) || 0;
     thrustMap.set(g.thrustArea, current + g.weightage);
     totalWeight += g.weightage;
@@ -140,7 +151,7 @@ export default async function AnalyticsPage() {
     orderBy: { createdAt: 'desc' }
   });
 
-  const auditLogs = await Promise.all(auditLogsRaw.map(async (log) => {
+  const auditLogs = await Promise.all(auditLogsRaw.map(async (log: { id: string; userId: string; action: string; entityType: string; entityId: string; createdAt: Date }) => {
     let userName = log.userId;
     if (log.userId === 'mgr-rohan') userName = 'Rohan Jain';
     const mins = Math.floor((now.getTime() - log.createdAt.getTime()) / 60000);
