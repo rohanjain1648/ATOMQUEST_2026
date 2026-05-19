@@ -100,7 +100,6 @@ export default function Home() {
           </div>
 
           <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>
-            AtomQuest Hackathon 1.0 Submission<br/>
             Secure, scalable, and beautifully engineered.
           </div>
         </div>
