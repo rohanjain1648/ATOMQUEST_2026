@@ -376,3 +376,92 @@ textarea.form-control { font-family: var(--font-primary); font-size: 0.95rem; }
   box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: float 6s infinite ease-in-out alternate; z-index: 10;
 }
 .floating-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+/* Print styles for gorgeous PDF exports */
+@media print {
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  /* Bust all height and scroll containers to let pages split naturally */
+  .flex,
+  main,
+  .custom-scrollbar,
+  div[style*="height: 100vh"],
+  div[style*="height:100vh"],
+  div[style*="overflow-y: auto"],
+  div[style*="overflow-y:auto"],
+  div[style*="overflow: hidden"],
+  div[style*="overflow:hidden"] {
+    height: auto !important;
+    min-height: initial !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overflow-y: visible !important;
+    display: block !important; /* Force block flow instead of flex constraints */
+  }
+  
+  /* Hide UI elements that are irrelevant for reports */
+  aside,
+  header,
+  .btn,
+  .icon-btn,
+  nav,
+  .flex.gap-md button, /* Hide tab toggles */
+  [style*="position: relative; z-index: 999"], /* Role switcher */
+  .no-print {
+    display: none !important;
+  }
+  
+  /* Expand main container to full width */
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Make sure panels print clearly on white background and prevent ugly page splits */
+  .glass-panel,
+  .glass-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin-bottom: var(--space-lg) !important;
+  }
+
+  /* Ensure text colors are clear in print */
+  h1, h2, h3, h4, h5, h6, p, td, th, span, div {
+    color: #000000 !important;
+  }
+
+  /* Force SVG chart texts, labels, axes, and legends to print in readable dark grey */
+  svg text,
+  .recharts-text,
+  .recharts-label,
+  .recharts-cartesian-axis-tick-value,
+  .recharts-legend-item-text {
+    fill: #1e293b !important;
+    color: #1e293b !important;
+    font-weight: 500 !important;
+  }
+
+  /* Adjust chart grid lines for light-themed printing */
+  .recharts-cartesian-grid line {
+    stroke: #e2e8f0 !important;
+    stroke-opacity: 0.8 !important;
+  }
+
+  .text-gradient {
+    background: none !important;
+    -webkit-text-fill-color: initial !important;
+    color: #000000 !important;
+  }
+}

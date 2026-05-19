@@ -1,18 +1,32 @@
 
 import Link from 'next/link';
-import { Target, TrendingUp, AlertCircle, Clock, CalendarCheck, CalendarClock } from 'lucide-react';
+import { Target, TrendingUp, AlertCircle, Clock, CalendarClock, Users, CheckCircle2 } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Dashboard() {
-  // Fetch real data
+  const cookieStore = cookies();
+  const userId = cookieStore.get('prism_user_id')?.value || 'emp-priya';
+  const isManager = userId === 'mgr-rohan';
+
+  // Fetch active user details
+  const activeUser = await prisma.user.findUnique({ where: { id: userId } });
+
+  // Fetch active goal cycle
   const cycle = await prisma.goalCycle.findFirst({ where: { status: 'ACTIVE' }, include: { checkInWindows: true } });
+
+  // Fetch real sheet data
   const sheet = await prisma.goalSheet.findFirst({
-    where: { userId: 'emp-priya' },
+    where: { userId },
     include: { goals: { include: { achievements: true } } },
     orderBy: { createdAt: 'desc' },
   });
+
+  // Fetch manager stats if applicable
+  const pendingApprovals = isManager ? await prisma.goalSheet.count({ where: { status: 'SUBMITTED' } }) : 0;
+  const teamCount = isManager ? await prisma.user.count({ where: { managerId: userId } }) : 0;
 
   // Compute weighted score
   let weightedScore = 0;
@@ -43,42 +57,82 @@ export default async function Dashboard() {
     <div className="animate-fade-in-up">
       <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-lg)' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', marginBottom: 'var(--space-xs)' }}>Welcome back, Rohan</h1>
-          <p style={{ color: 'rgba(255,255,255,0.6)' }}>Here is your performance overview for {cycle?.name || 'FY 2026-27'}.</p>
+          <h1 style={{ fontSize: '2rem', marginBottom: 'var(--space-xs)' }}>Welcome back, {activeUser?.name || 'User'}</h1>
+          <p style={{ color: 'rgba(255,255,255,0.6)' }}>
+            {isManager 
+              ? `Manage your team goals and track organizational alignment for ${cycle?.name || 'FY 2026-27'}.`
+              : `Here is your performance overview for ${cycle?.name || 'FY 2026-27'}.`
+            }
+          </p>
         </div>
-        <Link href="/goals/create" className="btn btn-primary">
-          + Create Goal Sheet
-        </Link>
+        {!isManager && (
+          <Link href="/goals/create" className="btn btn-primary">
+            + Create Goal Sheet
+          </Link>
+        )}
       </div>
 
       {/* KPI Cards Row */}
       <div className="grid grid-cols-3 gap-md" style={{ marginBottom: 'var(--space-md)' }}>
-        <div className="glass-card">
-          <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
-            <div style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Goal Submission Status</div>
-            <div className="icon-btn" style={{ width: '32px', height: '32px', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--accent-warning)', border: 'none' }}>
-              <AlertCircle size={16} />
+        {isManager ? (
+          <>
+            <div className="glass-card">
+              <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
+                <div style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Pending Approvals</div>
+                <div className="icon-btn" style={{ width: '32px', height: '32px', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--accent-warning)', border: 'none' }}>
+                  <AlertCircle size={16} />
+                </div>
+              </div>
+              <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{pendingApprovals} Action Required</h2>
+              <div className="flex items-center gap-xs" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
+                <Clock size={12} />
+                Goal sheets waiting for L1 review
+              </div>
             </div>
-          </div>
-          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{sheet?.status === 'LOCKED' ? 'Locked ✓' : sheet?.status || 'Pending'}</h2>
-          <div className="flex items-center gap-xs" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
-            <Clock size={12} />
-            {sheet?.status === 'LOCKED' ? `Approved ${sheet.approvedAt ? new Date(sheet.approvedAt).toLocaleDateString() : ''}` : `Due in ${daysUntilDeadline} days`}
-          </div>
-        </div>
 
-        <div className="glass-card">
-          <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
-            <div style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Overall Progress</div>
-            <div className="icon-btn" style={{ width: '32px', height: '32px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-success)', border: 'none' }}>
-              <TrendingUp size={16} />
+            <div className="glass-card">
+              <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
+                <div style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Direct Reports</div>
+                <div className="icon-btn" style={{ width: '32px', height: '32px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-success)', border: 'none' }}>
+                  <Users size={16} />
+                </div>
+              </div>
+              <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{teamCount} Active</h2>
+              <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
+                Engineering department reports
+              </div>
             </div>
-          </div>
-          <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{weightedScore.toFixed(0)}%</h2>
-          <div className="progress-container">
-            <div className="progress-bar" style={{ width: `${Math.min(weightedScore, 100)}%` }}></div>
-          </div>
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="glass-card">
+              <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
+                <div style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Goal Submission Status</div>
+                <div className="icon-btn" style={{ width: '32px', height: '32px', background: 'rgba(245, 158, 11, 0.1)', color: 'var(--accent-warning)', border: 'none' }}>
+                  <AlertCircle size={16} />
+                </div>
+              </div>
+              <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{sheet?.status === 'LOCKED' ? 'Locked ✓' : sheet?.status || 'Pending'}</h2>
+              <div className="flex items-center gap-xs" style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
+                <Clock size={12} />
+                {sheet?.status === 'LOCKED' ? `Approved ${sheet.approvedAt ? new Date(sheet.approvedAt).toLocaleDateString() : ''}` : `Due in ${daysUntilDeadline} days`}
+              </div>
+            </div>
+
+            <div className="glass-card">
+              <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
+                <div style={{ color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>Overall Progress</div>
+                <div className="icon-btn" style={{ width: '32px', height: '32px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-success)', border: 'none' }}>
+                  <TrendingUp size={16} />
+                </div>
+              </div>
+              <h2 style={{ fontSize: '1.8rem', marginBottom: 'var(--space-sm)' }}>{weightedScore.toFixed(0)}%</h2>
+              <div className="progress-container">
+                <div className="progress-bar" style={{ width: `${Math.min(weightedScore, 100)}%` }}></div>
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="glass-card" style={{ background: 'var(--gradient-primary)', borderColor: 'rgba(255,255,255,0.2)' }}>
           <div className="flex justify-between items-center" style={{ marginBottom: 'var(--space-md)' }}>
@@ -109,7 +163,6 @@ export default async function Dashboard() {
             const winCloses = new Date(win.closes);
             const isActive = now >= winOpens && now <= winCloses;
             const isPast = now > winCloses;
-            const isFuture = now < winOpens;
 
             return (
               <div
@@ -140,28 +193,69 @@ export default async function Dashboard() {
       {/* Action Required */}
       <div className="glass-panel" style={{ padding: 'var(--space-lg)' }}>
         <h3 style={{ fontSize: '1.2rem', marginBottom: 'var(--space-md)' }}>Action Required</h3>
-        <div style={{ 
-          background: 'rgba(255,255,255,0.03)', 
-          border: '1px solid rgba(255,255,255,0.05)', 
-          borderRadius: 'var(--radius-md)', 
-          padding: 'var(--space-md)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <div className="flex items-center gap-md">
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(99, 102, 241, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-primary)' }}>
-              <Target size={20} />
+        {isManager ? (
+          <div style={{ 
+            background: 'rgba(99, 102, 241, 0.05)', 
+            border: '1px solid rgba(99, 102, 241, 0.1)', 
+            borderRadius: 'var(--radius-md)', 
+            padding: 'var(--space-md)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div className="flex items-center gap-md">
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(99, 102, 241, 0.2)', display: 'flex', alignItems: 'center', color: 'var(--accent-primary)', justifyContent: 'center' }}>
+                <Users size={20} />
+              </div>
+              <div>
+                <div style={{ fontWeight: 600, marginBottom: '4px' }}>Neha Gupta submitted her Goal Sheet for review</div>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>Review goals, assign weights, adjust targets, and locking for cycle.</div>
+              </div>
             </div>
-            <div>
-              <div style={{ fontWeight: 600, marginBottom: '4px' }}>Submit your Goal Sheet for {cycle?.name || 'FY 2026-27'}</div>
-              <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>You must define and submit your goals for manager approval.</div>
-            </div>
+            <Link href="/team" className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+              Review Sheet
+            </Link>
           </div>
-          <Link href="/goals/create" className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
-            Start Now
-          </Link>
-        </div>
+        ) : (
+          <div style={{ 
+            background: 'rgba(255, 255, 255, 0.03)', 
+            border: '1px solid rgba(255, 255, 255, 0.05)', 
+            borderRadius: 'var(--radius-md)', 
+            padding: 'var(--space-md)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div className="flex items-center gap-md">
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(99, 102, 241, 0.2)', display: 'flex', alignItems: 'center', color: 'var(--accent-primary)', justifyContent: 'center' }}>
+                <Target size={20} />
+              </div>
+              <div>
+                <div style={{ fontWeight: 600, marginBottom: '4px' }}>
+                  {sheet?.status === 'LOCKED' 
+                    ? 'Goal setting cycle completed successfully' 
+                    : `Submit your Goal Sheet for ${cycle?.name || 'FY 2026-27'}`
+                  }
+                </div>
+                <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.5)' }}>
+                  {sheet?.status === 'LOCKED'
+                    ? 'Your goal cycle is locked and achievements are tracked automatically.'
+                    : 'You must define and submit your goals for manager approval.'
+                  }
+                </div>
+              </div>
+            </div>
+            {sheet?.status === 'LOCKED' ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--accent-success)', fontSize: '0.85rem', fontWeight: 600 }}>
+                <CheckCircle2 size={16} /> Locked
+              </div>
+            ) : (
+              <Link href="/goals/create" className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+                Start Now
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

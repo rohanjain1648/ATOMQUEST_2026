@@ -19,8 +19,8 @@ async function main() {
   const manager = await prisma.user.create({ data: { id: 'mgr-rohan', email: 'rohan.jain@company.com', name: 'Rohan Jain', role: 'MANAGER', department: 'Engineering' } });
   await prisma.user.create({ data: { id: 'emp-priya', email: 'priya.sharma@company.com', name: 'Priya Sharma', role: 'EMPLOYEE', department: 'Engineering', managerId: manager.id } });
   await prisma.user.create({ data: { id: 'emp-amit', email: 'amit.patel@company.com', name: 'Amit Patel', role: 'EMPLOYEE', department: 'Engineering', managerId: manager.id } });
-  await prisma.user.create({ data: { id: 'emp-neha', email: 'neha.gupta@company.com', name: 'Neha Gupta', role: 'EMPLOYEE', department: 'Engineering', managerId: manager.id } });
-  await prisma.user.create({ data: { id: 'emp-ravi', email: 'ravi.kumar@company.com', name: 'Ravi Kumar', role: 'EMPLOYEE', department: 'Engineering', managerId: manager.id } });
+  await prisma.user.create({ data: { id: 'emp-neha', email: 'neha.gupta@company.com', name: 'Neha Gupta', role: 'EMPLOYEE', department: 'QA', managerId: manager.id } });
+  await prisma.user.create({ data: { id: 'emp-ravi', email: 'ravi.kumar@company.com', name: 'Ravi Kumar', role: 'EMPLOYEE', department: 'Operations', managerId: manager.id } });
 
   const cycle = await prisma.goalCycle.create({ data: { id: 'cycle-fy2627', name: 'FY 2026-27', startDate: new Date('2026-04-01'), endDate: new Date('2027-03-31'), status: 'ACTIVE' } });
   await prisma.checkInWindow.create({ data: { id: 'win-q1', cycleId: cycle.id, quarter: 'Q1', opensAt: new Date('2026-07-01'), closesAt: new Date('2026-07-31') } });

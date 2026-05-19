@@ -74,6 +74,60 @@ export default function AnalyticsClient({ data: initialData }: { data: any }) {
       }
     });
 
+    // Collect active goals for distribution analysis
+    const thrustCount: Record<string, number> = {};
+    const uomCount: Record<string, number> = {};
+    let totalGoals = 0;
+
+    employees.forEach((emp: any) => {
+      const sheet = emp.goalSheets[0];
+      if (sheet) {
+        sheet.goals.forEach((goal: any) => {
+          // Apply Thrust Area filter if selected
+          if (selectedThrust !== 'All Thrust Areas' && goal.thrustArea !== selectedThrust) return;
+
+          // Count Thrust Area
+          thrustCount[goal.thrustArea] = (thrustCount[goal.thrustArea] || 0) + 1;
+          
+          // Count UoM type
+          const uomLabel = goal.uom || 'Unknown';
+          uomCount[uomLabel] = (uomCount[uomLabel] || 0) + 1;
+          
+          totalGoals++;
+        });
+      }
+    });
+
+    const thrustColors: Record<string, string> = { 
+      Revenue: '#6366f1', 
+      Quality: '#06b6d4', 
+      Safety: '#10b981', 
+      People: '#a855f7', 
+      Cost: '#ec4899' 
+    };
+
+    const uomColors: Record<string, string> = {
+      MIN_PERCENT: '#6366f1',
+      MIN_NUMERIC: '#3b82f6',
+      MAX_NUMERIC: '#10b981',
+      ZERO: '#f59e0b',
+      TIMELINE: '#ec4899'
+    };
+
+    const thrustDistribution = Object.entries(thrustCount).map(([name, count]) => ({
+      name,
+      value: count,
+      percent: totalGoals > 0 ? Math.round((count / totalGoals) * 100) : 0,
+      fill: thrustColors[name] || '#9ca3af'
+    })).sort((a, b) => b.value - a.value);
+
+    const uomDistribution = Object.entries(uomCount).map(([name, count]) => ({
+      name: name.replace('_', ' '), // e.g. MIN PERCENT
+      value: count,
+      percent: totalGoals > 0 ? Math.round((count / totalGoals) * 100) : 0,
+      fill: uomColors[name] || '#6b7280'
+    })).sort((a, b) => b.value - a.value);
+
     const attainment = employeesWithScores > 0 ? (totalScoreSum / employeesWithScores) : 0;
     
     return {
@@ -93,7 +147,9 @@ export default function AnalyticsClient({ data: initialData }: { data: any }) {
         subject,
         A: data.count > 0 ? Math.round(data.actual / data.count) : 0,
         fullMark: 100,
-      }))
+      })),
+      thrustDistribution,
+      uomDistribution
     };
   }, [initialData, selectedDept, selectedThrust]);
 
@@ -174,7 +230,7 @@ export default function AnalyticsClient({ data: initialData }: { data: any }) {
           <button className="btn btn-secondary" onClick={handleExportCSV} disabled={exporting}>
             <FileSpreadsheet size={16} /> {exporting ? 'Exporting...' : 'Export CSV'}
           </button>
-          <button className="btn btn-primary">
+          <button className="btn btn-primary" onClick={() => window.print()}>
             <Download size={16} /> Export PDF
           </button>
         </div>
@@ -317,6 +373,66 @@ export default function AnalyticsClient({ data: initialData }: { data: any }) {
                     <Legend />
                     <Bar dataKey="checkins" name="Check-in Completion %" fill="#a855f7" radius={[4, 4, 0, 0]} />
                     <Bar dataKey="approvals" name="On-Time Approvals %" fill="#ec4899" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+
+          {/* Goal Distribution Analysis */}
+          <div className="grid grid-cols-12 gap-lg" style={{ marginBottom: 'var(--space-xl)' }}>
+            {/* Thrust Area Distribution Donut Chart */}
+            <div className="glass-panel col-span-12 lg-col-span-6" style={{ minWidth: 0 }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: 'var(--space-lg)' }}>Goal Thrust Area Distribution</h3>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-around', gap: '20px', height: '240px' }}>
+                <div style={{ width: '50%', height: '100%' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={filteredData.thrustDistribution}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={55}
+                        outerRadius={80}
+                        paddingAngle={3}
+                        dataKey="value"
+                      >
+                        {filteredData.thrustDistribution.map((entry: any, index: number) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip contentStyle={{ backgroundColor: 'rgba(10, 13, 22, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '50%', paddingRight: '10px' }}>
+                  {filteredData.thrustDistribution.map((item: any, idx: number) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: item.fill }} />
+                        <span style={{ color: 'rgba(255,255,255,0.8)' }}>{item.name}</span>
+                      </div>
+                      <span style={{ fontWeight: 600 }}>{item.value} ({item.percent}%)</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* UoM Type Distribution Horizontal Bar Chart */}
+            <div className="glass-panel col-span-12 lg-col-span-6" style={{ minWidth: 0 }}>
+              <h3 style={{ fontSize: '1.2rem', marginBottom: 'var(--space-lg)' }}>Goal UoM Type Distribution</h3>
+              <div style={{ height: '240px', width: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={filteredData.uomDistribution} layout="vertical" margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
+                    <XAxis type="number" hide />
+                    <YAxis dataKey="name" type="category" stroke="rgba(255,255,255,0.8)" axisLine={false} tickLine={false} width={110} style={{ fontSize: '0.8rem' }} />
+                    <RechartsTooltip contentStyle={{ backgroundColor: 'rgba(10, 13, 22, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+                    <Bar dataKey="value" name="Goal Count" radius={[0, 4, 4, 0]}>
+                      {filteredData.uomDistribution.map((entry: any, index: number) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                      ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>

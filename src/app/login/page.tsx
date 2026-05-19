@@ -9,15 +9,35 @@ export default function Home() {
   const [isHovering, setIsHovering] = useState(false);
   const [showSSOModal, setShowSSOModal] = useState(false);
   const [ssoStep, setSsoStep] = useState(0); // 0: email, 1: password/MFA, 2: success
+  const [email, setEmail] = useState('rohan.jain@company.com');
 
   const handleMockSSO = (e: React.FormEvent) => {
     e.preventDefault();
     if (ssoStep === 0) {
       setSsoStep(1);
     } else if (ssoStep === 1) {
+      // Map email to active database user ID
+      let userId = 'emp-priya';
+      const cleanEmail = email.toLowerCase().trim();
+      
+      if (cleanEmail.includes('neha')) {
+        userId = 'emp-neha';
+      } else if (cleanEmail.includes('rohan')) {
+        userId = 'mgr-rohan';
+      } else if (cleanEmail.includes('priya')) {
+        userId = 'emp-priya';
+      } else if (cleanEmail.includes('amit')) {
+        userId = 'emp-amit';
+      } else if (cleanEmail.includes('ravi')) {
+        userId = 'emp-ravi';
+      }
+
+      // Write cookie
+      document.cookie = `prism_user_id=${userId}; path=/; max-age=${60 * 60 * 24 * 7}`;
+
       setSsoStep(2);
       setTimeout(() => {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }, 1500);
     }
   };
@@ -128,7 +148,8 @@ export default function Home() {
                     type="email" 
                     placeholder="Email, phone, or Skype" 
                     required
-                    defaultValue="rohan.jain@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     style={{ width: '100%', padding: '8px 0', border: 'none', borderBottom: '1px solid #000', fontSize: '1rem', marginBottom: '24px', outline: 'none' }}
                   />
                   <div style={{ fontSize: '0.85rem', color: '#0067b8', marginBottom: '32px', cursor: 'pointer' }}>Can&apos;t access your account?</div>
@@ -142,7 +163,7 @@ export default function Home() {
                 <div className="animate-fade-in-up">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', color: '#1b1b1b' }}>
                     <ArrowRight size={16} style={{ transform: 'rotate(180deg)', cursor: 'pointer' }} onClick={() => setSsoStep(0)} />
-                    rohan.jain@company.com
+                    {email}
                   </div>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '24px' }}>Enter password</h2>
                   <input 

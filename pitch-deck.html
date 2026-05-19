@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PRISM – AtomQuest Hackathon Pitch Deck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #03050a;
+      --indigo: #6366f1;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+      --em: #10b981;
+      --pink: #ec4899;
+      --w: rgba(255, 255, 255, 1);
+      --w80: rgba(255, 255, 255, .8);
+      --w40: rgba(255, 255, 255, .4);
+      --w20: rgba(255, 255, 255, .2);
+      --glass: rgba(255, 255, 255, .05);
+      --gb: rgba(255, 255, 255, .12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #000
+    }
+
+    /* ── SLIDE BASE ── */
+    .slide {
+      width: 297mm;
+      height: 210mm;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+      page-break-after: always;
+      break-after: page;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @page {
+      size: A4 landscape;
+      margin: 0
+    }
+
+    @media screen {
+      body {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center
+      }
+
+      .slide {
+        box-shadow: 0 0 60px rgba(99, 102, 241, .25);
+        border-radius: 4px
+      }
+
+      #print-guide {
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        color: #fff;
+        background: #1a1a2e;
+        border: 1px solid rgba(99, 102, 241, .4);
+        border-radius: 12px;
+        padding: 20px 28px;
+        width: 297mm;
+        display: flex;
+        gap: 32px;
+        align-items: center;
+      }
+
+      #print-guide h3 {
+        color: #6366f1;
+        font-size: 15px;
+        margin-bottom: 8px
+      }
+
+      #print-guide ol {
+        padding-left: 18px;
+        color: rgba(255, 255, 255, .7);
+        line-height: 2
+      }
+
+      #print-guide .warn {
+        background: rgba(99, 102, 241, .15);
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, .6);
+        margin-top: 10px
+      }
+
+      #print-guide strong {
+        color: #10b981
+      }
+    }
+
+    @media print {
+      #print-guide {
+        display: none
+      }
+    }
+
+    /* ── REUSABLES ── */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none
+    }
+
+    .ab {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px
+    }
+
+    /* accent bar */
+    .lbl {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase
+    }
+
+    .h1 {
+      font-size: 52px;
+      font-weight: 900;
+      color: var(--w);
+      line-height: 1.05
+    }
+
+    .h2 {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--w);
+      line-height: 1.1
+    }
+
+    .h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--w)
+    }
+
+    .sub {
+      font-size: 13px;
+      color: var(--w40);
+      line-height: 1.7
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid var(--gb);
+      border-radius: 12px;
+      padding: 18px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .pill {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: 10px;
+      font-weight: 700
+    }
+
+    .divider {
+      height: 2px;
+      width: 44px;
+      margin: 8px 0 14px
+    }
+
+    .bar-bg {
+      background: var(--glass);
+      border-radius: 4px
+    }
+
+    .bar {
+      border-radius: 4px;
+      height: 100%
+    }
+
+    .g2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .g3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px
+    }
+
+    .g4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px
+    }
+
+    .row {
+      display: flex;
+      gap: 12px
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .lp {
+      width: 38%;
+      padding: 32px 28px 32px 36px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .rp {
+      flex: 1;
+      padding: 28px 32px 28px 0;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 12px
+    }
+
+    .fp {
+      padding: 28px 36px;
+      position: relative;
+      z-index: 2;
+      flex: 1
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- PRINT INSTRUCTIONS -->
+  <div id="print-guide">
+    <div>
+      <h3>How to Export as PDF</h3>
+      <ol>
+        <li>Press <strong>Ctrl+P</strong> (Windows) or <strong>⌘P</strong> (Mac)</li>
+        <li>Destination → <strong>Save as PDF</strong></li>
+        <li>Layout → <strong>Landscape</strong></li>
+        <li>Paper size → <strong>A4</strong></li>
+        <li>Margins → <strong>None</strong></li>
+        <li>Scale → <strong>Default</strong></li>
+        <li>✅ Check <strong>Background graphics</strong></li>
+        <li>Click <strong>Save</strong></li>
+      </ol>
+    </div>
+    <div class="warn" style="flex:1">
+      ⚠ Make sure <strong>Background graphics</strong> is enabled — without it the dark backgrounds won't print.<br><br>
+      Best results in <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong>.
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 1 — TITLE
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="align-items:center;justify-content:center">
+    <div class="orb" style="width:380px;height:380px;left:-120px;top:-120px;background:var(--indigo);opacity:.2"></div>
+    <div class="orb" style="width:320px;height:320px;right:-80px;bottom:-60px;background:var(--purple);opacity:.18">
+    </div>
+    <div class="orb" style="width:280px;height:280px;left:55%;bottom:-60px;background:var(--cyan);opacity:.1"></div>
+    <div class="ab" style="background:var(--indigo)"></div>
+    <div style="position:relative;z-index:2;text-align:center">
+      <div
+        style="display:inline-block;background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:5px 22px;margin-bottom:22px">
+        <span class="lbl" style="color:var(--indigo)">⬡ AtomQuest Hackathon 1.0</span>
+      </div>
+      <h1 style="font-size:96px;font-weight:900;color:var(--w);letter-spacing:-4px;line-height:.9;margin-bottom:14px">
+        PRISM</h1>
+      <p style="font-size:11px;color:var(--w40);letter-spacing:5px;margin-bottom:20px">PERFORMANCE · RECOGNITION ·
+        INSIGHTS · STRATEGY · METRICS</p>
+      <p style="font-size:19px;font-weight:600;color:var(--w80);line-height:1.6;margin-bottom:32px">The Enterprise Goal
+        Management Platform<br>that makes performance beautiful.</p>
+      <div style="width:240px;height:1px;background:rgba(99,102,241,.4);margin:0 auto 20px"></div>
+      <p style="font-size:11px;color:var(--w40)">Next.js 14 · TypeScript · Prisma · SQLite · Recharts · NextAuth ·
+        Resend</p>
+      <div
+        style="display:inline-block;background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:6px 22px;margin-top:22px">
+        <span style="font-size:13px;font-weight:600;color:var(--w80)">Team: Rohan Jain</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 2 — THE PROBLEM
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="flex-direction:row">
+    <div class="orb" style="width:320px;height:320px;right:-60px;top:-80px;background:var(--pink);opacity:.15"></div>
+    <div class="orb" style="width:260px;height:260px;left:-60px;bottom:-60px;background:var(--purple);opacity:.12">
+    </div>
+    <div class="ab" style="background:var(--pink)"></div>
+
+    <div class="lp">
+      <p class="lbl" style="color:var(--pink)">The Problem</p>
+      <div class="divider" style="background:var(--pink)"></div>
+      <h2 class="h1" style="font-size:48px">Goal tracking<br>is broken.</h2>
+      <p class="sub" style="margin-top:14px;font-size:13px">Organisations lose millions in misaligned effort because
+        performance data lives everywhere — except one place.</p>
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:8px">
+        <div
+          style="display:flex;align-items:center;gap:10px;background:rgba(236,72,153,.08);border-radius:8px;padding:10px 14px">
+          <span style="font-size:11px;font-weight:700;color:var(--pink)">$600B+</span>
+          <span style="font-size:11px;color:var(--w40)">lost annually to poor performance management</span>
+        </div>
+        <div
+          style="display:flex;align-items:center;gap:10px;background:rgba(236,72,153,.08);border-radius:8px;padding:10px 14px">
+          <span style="font-size:11px;font-weight:700;color:var(--pink)">68%</span>
+          <span style="font-size:11px;color:var(--w40)">of employees don't know their company's top goals</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp" style="justify-content:center">
+      <div class="g2">
+        <div class="card" style="border-left:3px solid var(--pink)">
+          <div style="font-size:22px;margin-bottom:8px">📊</div>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Fragmented Spreadsheets</p>
+          <p class="sub" style="font-size:11px">Goals scattered across Excel, email threads, and whiteboards with no
+            single source of truth.</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--purple)">
+          <div style="font-size:22px;margin-bottom:8px">🔍</div>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Zero Real-Time Visibility</p>
+          <p class="sub" style="font-size:11px">Managers fly blind until quarter-end. By then, course correction is too
+            late.</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--indigo)">
+          <div style="font-size:22px;margin-bottom:8px">⚡</div>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Manual Compliance Burden</p>
+          <p class="sub" style="font-size:11px">HR teams stitch data together manually. Audit trails are incomplete or
+            missing entirely.</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--cyan)">
+          <div style="font-size:22px;margin-bottom:8px">🎯</div>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">No Strategic Alignment</p>
+          <p class="sub" style="font-size:11px">Individual goals aren't connected to departmental KPIs or company
+            objectives.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 3 — THE SOLUTION
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="flex-direction:row">
+    <div class="orb" style="width:360px;height:360px;left:-80px;top:-100px;background:var(--em);opacity:.12"></div>
+    <div class="orb" style="width:280px;height:280px;right:-60px;bottom:-40px;background:var(--indigo);opacity:.14">
+    </div>
+    <div class="ab" style="background:var(--em)"></div>
+
+    <div class="lp">
+      <p class="lbl" style="color:var(--em)">The Solution</p>
+      <div class="divider" style="background:var(--em)"></div>
+      <h2 class="h1" style="font-size:48px">Introducing<br>PRISM</h2>
+      <p class="sub" style="margin-top:14px">One platform. Every goal. Fully visible.</p>
+      <div style="margin-top:28px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <span style="font-size:28px;font-weight:900;color:var(--em);min-width:44px">100%</span>
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--w)">BRD Compliant</p>
+            <p class="sub" style="font-size:11px">All phases &amp; formulas implemented</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <span style="font-size:28px;font-weight:900;color:var(--cyan);min-width:44px">3</span>
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--w)">User Roles</p>
+            <p class="sub" style="font-size:11px">Employee · Manager · Admin</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <span style="font-size:28px;font-weight:900;color:var(--purple);min-width:44px">$0</span>
+          <div>
+            <p style="font-size:13px;font-weight:600;color:var(--w)">Infrastructure Cost</p>
+            <p class="sub" style="font-size:11px">100% free-tier stack</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp" style="justify-content:center;gap:10px">
+      <!-- Central PRISM visual -->
+      <div style="display:flex;align-items:center;justify-content:center;margin-bottom:4px">
+        <div
+          style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--purple));display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(99,102,241,.5)">
+          <span style="font-size:22px;font-weight:900;color:var(--w)">PRISM</span>
+        </div>
+      </div>
+      <!-- Feature pills in a grid -->
+      <div class="g2" style="gap:8px">
+        <div class="pill"
+          style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.4);color:var(--indigo);text-align:center">
+          🎯 Goal Creation Wizard</div>
+        <div class="pill"
+          style="background:rgba(6,182,212,.15);border:1px solid rgba(6,182,212,.4);color:var(--cyan);text-align:center">
+          ⚡ Live BRD Scoring</div>
+        <div class="pill"
+          style="background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:var(--em);text-align:center">
+          📊 Analytics Dashboard</div>
+        <div class="pill"
+          style="background:rgba(236,72,153,.15);border:1px solid rgba(236,72,153,.4);color:var(--pink);text-align:center">
+          🔔 Escalation Engine</div>
+        <div class="pill"
+          style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.4);color:var(--purple);text-align:center">
+          🔒 Immutable Audit Trail</div>
+        <div class="pill"
+          style="background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.4);color:var(--indigo);text-align:center">
+          ☁️ Azure AD SSO</div>
+      </div>
+      <!-- 3 phase badges -->
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <div class="card" style="flex:1;text-align:center;padding:12px 8px">
+          <div style="font-size:18px;margin-bottom:4px">📝</div>
+          <p style="font-size:11px;font-weight:700;color:var(--indigo)">Phase 1</p>
+          <p style="font-size:10px;color:var(--w40)">Goal Creation</p>
+        </div>
+        <div class="card" style="flex:1;text-align:center;padding:12px 8px">
+          <div style="font-size:18px;margin-bottom:4px">📈</div>
+          <p style="font-size:11px;font-weight:700;color:var(--cyan)">Phase 2</p>
+          <p style="font-size:10px;color:var(--w40)">Tracking</p>
+        </div>
+        <div class="card" style="flex:1;text-align:center;padding:12px 8px">
+          <div style="font-size:18px;margin-bottom:4px">🧠</div>
+          <p style="font-size:11px;font-weight:700;color:var(--purple)">Phase 3</p>
+          <p style="font-size:10px;color:var(--w40)">Analytics</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 4 — ARCHITECTURE
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="flex-direction:row">
+    <div class="orb" style="width:400px;height:280px;left:30%;top:-100px;background:var(--cyan);opacity:.08"></div>
+    <div class="ab" style="background:var(--cyan)"></div>
+
+    <div class="lp" style="width:30%">
+      <p class="lbl" style="color:var(--cyan)">Architecture</p>
+      <div class="divider" style="background:var(--cyan)"></div>
+      <h2 class="h2">How PRISM Works</h2>
+      <p class="sub" style="margin-top:12px;font-size:12px">A clean 4-layer architecture built for speed, scale, and
+        safety.</p>
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+        <div style="background:rgba(99,102,241,.1);border-radius:8px;padding:10px 14px">
+          <p style="font-size:11px;font-weight:700;color:var(--indigo)">External Integrations</p>
+        </div>
+        <div style="padding-left:12px;display:flex;flex-direction:column;gap:4px">
+          <p style="font-size:11px;color:var(--w40)">🔐 Microsoft Entra ID (SSO)</p>
+          <p style="font-size:11px;color:var(--w40)">📧 Resend (Email alerts)</p>
+          <p style="font-size:11px;color:var(--w40)">💬 MS Teams (Adaptive cards)</p>
+          <p style="font-size:11px;color:var(--w40)">☁️ Vercel (Deployment)</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp" style="justify-content:center">
+      <!-- 4 layer stack diagram -->
+      <div style="display:flex;flex-direction:column;gap:6px;position:relative">
+        <div class="card"
+          style="border-left:4px solid var(--indigo);display:flex;align-items:center;gap:16px;padding:14px 18px">
+          <span style="font-size:24px">🖥</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w)">Presentation Layer</p>
+            <p style="font-size:11px;color:var(--w40)">PRISM Glass UI · React 18 · Next.js 14 App Router</p>
+          </div>
+        </div>
+        <div
+          style="width:2px;height:16px;background:linear-gradient(var(--indigo),var(--purple));margin-left:30px;opacity:.5">
+        </div>
+        <div class="card"
+          style="border-left:4px solid var(--purple);display:flex;align-items:center;gap:16px;padding:14px 18px">
+          <span style="font-size:24px">⚙️</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w)">Business Logic Layer</p>
+            <p style="font-size:11px;color:var(--w40)">BRD Scoring Engine · Goal State Machine · Escalation Rules · Zod
+              Validation</p>
+          </div>
+        </div>
+        <div
+          style="width:2px;height:16px;background:linear-gradient(var(--purple),var(--cyan));margin-left:30px;opacity:.5">
+        </div>
+        <div class="card"
+          style="border-left:4px solid var(--cyan);display:flex;align-items:center;gap:16px;padding:14px 18px">
+          <span style="font-size:24px">🗄</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w)">Data Access Layer</p>
+            <p style="font-size:11px;color:var(--w40)">Prisma ORM · Audit Log Middleware · 12-Model Schema</p>
+          </div>
+        </div>
+        <div
+          style="width:2px;height:16px;background:linear-gradient(var(--cyan),var(--em));margin-left:30px;opacity:.5">
+        </div>
+        <div class="card"
+          style="border-left:4px solid var(--em);display:flex;align-items:center;gap:16px;padding:14px 18px">
+          <span style="font-size:24px">☁️</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w)">Infrastructure Layer</p>
+            <p style="font-size:11px;color:var(--w40)">SQLite → PostgreSQL · NextAuth · Resend · MS Teams Webhooks ·
+              Vercel</p>
+          </div>
+        </div>
+      </div>
+      <!-- Data flow note -->
+      <div
+        style="background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:10px 16px;margin-top:6px">
+        <p style="font-size:11px;color:var(--cyan);font-weight:600">Browser → Next.js App Router → API Routes → Prisma
+          ORM → SQLite/PostgreSQL</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 5 — PHASE 1: GOAL CREATION
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="flex-direction:row">
+    <div class="orb" style="width:340px;height:340px;right:-60px;top:-60px;background:var(--indigo);opacity:.15"></div>
+    <div class="orb" style="width:260px;height:260px;left:-40px;bottom:-40px;background:var(--purple);opacity:.1"></div>
+    <div class="ab" style="background:var(--indigo)"></div>
+
+    <div class="lp">
+      <p class="lbl" style="color:var(--indigo)">Phase 1 of 3</p>
+      <div class="divider" style="background:var(--indigo)"></div>
+      <h2 class="h2">Goal Creation<br>&amp; Approval</h2>
+      <p class="sub" style="margin-top:12px;font-size:12px">A guided wizard that enforces best practices by design.</p>
+      <!-- Wizard mockup -->
+      <div class="card" style="margin-top:18px;padding:14px">
+        <div style="background:rgba(99,102,241,.2);border-radius:6px;padding:8px 12px;margin-bottom:10px">
+          <p style="font-size:11px;font-weight:700;color:var(--w)">Create New Goal</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="background:rgba(255,255,255,.05);border-radius:5px;padding:6px 10px">
+            <p style="font-size:9px;color:var(--w40)">Goal Title</p>
+            <p style="font-size:11px;color:var(--w)">Achieve 15% Revenue Growth YoY</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div style="background:rgba(255,255,255,.05);border-radius:5px;padding:6px 10px">
+              <p style="font-size:9px;color:var(--w40)">Thrust Area</p>
+              <p style="font-size:11px;color:var(--w)">Revenue</p>
+            </div>
+            <div style="background:rgba(255,255,255,.05);border-radius:5px;padding:6px 10px">
+              <p style="font-size:9px;color:var(--w40)">Weightage</p>
+              <p style="font-size:11px;color:var(--em)">30% ✓</p>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--indigo);border-radius:6px;padding:7px;margin-top:8px;text-align:center">
+          <p style="font-size:11px;font-weight:700;color:var(--w)">Submit for Approval →</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp" style="justify-content:center">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="card" style="border-left:3px solid var(--indigo);display:flex;align-items:flex-start;gap:12px">
+          <span style="font-size:20px">🎯</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Up to 8 Goals per Employee</p>
+            <p class="sub" style="font-size:11px">Multi-goal wizard with smart validation and progress tracking.</p>
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--cyan);display:flex;align-items:flex-start;gap:12px">
+          <span style="font-size:20px">⚖️</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">100% Weightage Enforcement</p>
+            <p class="sub" style="font-size:11px">Circular SVG tracker turns green only when weights total exactly 100%.
+            </p>
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--purple);display:flex;align-items:flex-start;gap:12px">
+          <span style="font-size:20px">🔒</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Goal Locking After Approval</p>
+            <p class="sub" style="font-size:11px">Immutable post-approval — ensures accountability and audit integrity.
+            </p>
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--em);display:flex;align-items:flex-start;gap:12px">
+          <span style="font-size:20px">📤</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Shared Goal Engine</p>
+            <p class="sub" style="font-size:11px">Managers push departmental KPIs to multiple employees simultaneously.
+            </p>
+          </div>
+        </div>
+        <div class="card" style="border-left:3px solid var(--pink);display:flex;align-items:flex-start;gap:12px">
+          <span style="font-size:20px">↩️</span>
+          <div>
+            <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Return for Rework</p>
+            <p class="sub" style="font-size:11px">Manager returns goals with mandatory comments. Full revision history
+              logged.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 6 — PHASE 2: ACHIEVEMENT TRACKING
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="flex-direction:row">
+    <div class="orb" style="width:360px;height:360px;left:-80px;top:-80px;background:var(--cyan);opacity:.12"></div>
+    <div class="orb" style="width:280px;height:280px;right:-40px;bottom:-40px;background:var(--em);opacity:.10"></div>
+    <div class="ab" style="background:var(--cyan)"></div>
+
+    <div class="lp">
+      <p class="lbl" style="color:var(--cyan)">Phase 2 of 3</p>
+      <div class="divider" style="background:var(--cyan)"></div>
+      <h2 class="h2">Achievement Tracking &amp;<br>Quarterly Check-ins</h2>
+      <p class="sub" style="margin-top:12px;font-size:12px">Planned vs. Actual — live, every quarter.</p>
+      <!-- Quarterly progress bars -->
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:11px;color:var(--w40);width:20px">Q1</span>
+          <div class="bar-bg" style="flex:1;height:10px">
+            <div class="bar" style="width:72%;background:var(--indigo)"></div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:var(--w);width:32px">72%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:11px;color:var(--w40);width:20px">Q2</span>
+          <div class="bar-bg" style="flex:1;height:10px">
+            <div class="bar" style="width:85%;background:var(--cyan)"></div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:var(--w);width:32px">85%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:11px;color:var(--w40);width:20px">Q3</span>
+          <div class="bar-bg" style="flex:1;height:10px">
+            <div class="bar" style="width:91%;background:var(--purple)"></div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:var(--w);width:32px">91%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:11px;color:var(--w40);width:20px">Q4</span>
+          <div class="bar-bg" style="flex:1;height:10px">
+            <div class="bar" style="width:97%;background:var(--em)"></div>
+          </div>
+          <span style="font-size:11px;font-weight:700;color:var(--em);width:32px">97%</span>
+        </div>
+      </div>
+      <!-- stats -->
+      <div style="display:flex;gap:10px;margin-top:18px">
+        <div class="card" style="flex:1;text-align:center;padding:10px">
+          <p style="font-size:22px;font-weight:900;color:var(--em)">97%</p>
+          <p style="font-size:10px;color:var(--w40)">Final Score</p>
+        </div>
+        <div class="card" style="flex:1;text-align:center;padding:10px">
+          <p style="font-size:22px;font-weight:900;color:var(--cyan)">4</p>
+          <p style="font-size:10px;color:var(--w40)">Quarters</p>
+        </div>
+        <div class="card" style="flex:1;text-align:center;padding:10px">
+          <p style="font-size:22px;font-weight:900;color:var(--indigo)">8</p>
+          <p style="font-size:10px;color:var(--w40)">Goals</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp" style="justify-content:center">
+      <!-- Check-in card mockup -->
+      <div class="card" style="padding:16px">
+        <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:10px">Manager Check-in View — Q2</p>
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <div
+            style="background:rgba(99,102,241,.08);border-radius:6px;padding:8px 12px;border-left:3px solid var(--indigo)">
+            <p style="font-size:9px;color:var(--w40)">Goal</p>
+            <p style="font-size:12px;font-weight:600;color:var(--w)">Revenue Growth 15%</p>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+            <div
+              style="background:rgba(6,182,212,.08);border-radius:6px;padding:8px 12px;border-left:3px solid var(--cyan)">
+              <p style="font-size:9px;color:var(--w40)">Planned Q2</p>
+              <p style="font-size:12px;font-weight:600;color:var(--w)">₹28,00,000</p>
+            </div>
+            <div
+              style="background:rgba(16,185,129,.08);border-radius:6px;padding:8px 12px;border-left:3px solid var(--em)">
+              <p style="font-size:9px;color:var(--w40)">Actual Q2</p>
+              <p style="font-size:12px;font-weight:600;color:var(--em)">₹31,50,000</p>
+            </div>
+          </div>
+          <div
+            style="background:rgba(168,85,247,.08);border-radius:6px;padding:8px 12px;border-left:3px solid var(--purple)">
+            <p style="font-size:9px;color:var(--w40)">BRD Score</p>
+            <p style="font-size:18px;font-weight:900;color:var(--purple)">112.5 <span
+                style="font-size:11px;color:var(--w40)">/ 100</span></p>
+          </div>
+          <div style="display:flex;gap:8px">
+            <div class="pill" style="background:rgba(16,185,129,.15);color:var(--em)">✓ On Track</div>
+            <div class="pill" style="background:rgba(99,102,241,.15);color:var(--indigo)">↑ Exceeds Target</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="padding:14px">
+        <p style="font-size:11px;font-weight:700;color:var(--cyan);margin-bottom:6px">Manager Feedback</p>
+        <p style="font-size:11px;color:var(--w40);line-height:1.7">"Great trajectory. Maintain client acquisition pace
+          for Q3. Focus on reducing churn below 5%."</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 7 — PHASE 3: ANALYTICS
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="flex-direction:row">
+    <div class="orb" style="width:400px;height:300px;left:30%;top:-80px;background:var(--purple);opacity:.1"></div>
+    <div class="ab" style="background:var(--purple)"></div>
+
+    <div class="lp" style="width:30%">
+      <p class="lbl" style="color:var(--purple)">Phase 3 of 3</p>
+      <div class="divider" style="background:var(--purple)"></div>
+      <h2 class="h2">Analytics &amp;<br>Governance</h2>
+      <p class="sub" style="margin-top:12px;font-size:12px">Command-center visibility for HR &amp; Leadership.</p>
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px">📈</span>
+          <p style="font-size:12px;color:var(--w80)">Org Performance Trends (Area chart)</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px">🍩</span>
+          <p style="font-size:12px;color:var(--w80)">Thrust Area Distribution (Donut chart)</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px">📊</span>
+          <p style="font-size:12px;color:var(--w80)">Department Ranking (Bar chart)</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px">🔍</span>
+          <p style="font-size:12px;color:var(--w80)">Real-time drill-down filters</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px">📋</span>
+          <p style="font-size:12px;color:var(--w80)">CSV export engine</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px"><span style="font-size:14px">📜</span>
+          <p style="font-size:12px;color:var(--w80)">Immutable audit log viewer</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rp" style="justify-content:center">
+      <!-- Trend chart mock -->
+      <div class="card" style="padding:14px">
+        <p style="font-size:11px;font-weight:700;color:var(--w);margin-bottom:10px">Org Performance Trend</p>
+        <div style="display:flex;align-items:flex-end;gap:8px;height:70px">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div
+              style="width:100%;background:linear-gradient(var(--indigo),rgba(99,102,241,.3));border-radius:4px 4px 0 0"
+              style2="height:44px"></div>
+            <div
+              style="height:44px;width:100%;background:linear-gradient(var(--indigo),rgba(99,102,241,.3));border-radius:4px 4px 0 0">
+            </div><span style="font-size:9px;color:var(--w40)">May</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div
+              style="height:50px;width:100%;background:linear-gradient(var(--indigo),rgba(99,102,241,.3));border-radius:4px 4px 0 0">
+            </div><span style="font-size:9px;color:var(--w40)">Jun</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div
+              style="height:55px;width:100%;background:linear-gradient(var(--purple),rgba(168,85,247,.3));border-radius:4px 4px 0 0">
+            </div><span style="font-size:9px;color:var(--w40)">Jul</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div
+              style="height:60px;width:100%;background:linear-gradient(var(--purple),rgba(168,85,247,.3));border-radius:4px 4px 0 0">
+            </div><span style="font-size:9px;color:var(--w40)">Aug</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div
+              style="height:64px;width:100%;background:linear-gradient(var(--cyan),rgba(6,182,212,.3));border-radius:4px 4px 0 0">
+            </div><span style="font-size:9px;color:var(--w40)">Sep</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+            <div
+              style="height:70px;width:100%;background:linear-gradient(var(--em),rgba(16,185,129,.3));border-radius:4px 4px 0 0">
+            </div><span style="font-size:9px;color:var(--em)">95%</span>
+          </div>
+        </div>
+      </div>
+      <!-- Dept ranking -->
+      <div class="card" style="padding:14px">
+        <p style="font-size:11px;font-weight:700;color:var(--w);margin-bottom:10px">Department Ranking</p>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:8px"><span
+              style="font-size:11px;color:var(--w40);width:80px">Engineering</span>
+            <div class="bar-bg" style="flex:1;height:8px">
+              <div class="bar" style="width:94%;background:var(--em)"></div>
+            </div><span style="font-size:11px;color:var(--em);width:30px">94%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px"><span
+              style="font-size:11px;color:var(--w40);width:80px">Sales</span>
+            <div class="bar-bg" style="flex:1;height:8px">
+              <div class="bar" style="width:87%;background:var(--cyan)"></div>
+            </div><span style="font-size:11px;color:var(--cyan);width:30px">87%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px"><span
+              style="font-size:11px;color:var(--w40);width:80px">HR</span>
+            <div class="bar-bg" style="flex:1;height:8px">
+              <div class="bar" style="width:82%;background:var(--indigo)"></div>
+            </div><span style="font-size:11px;color:var(--indigo);width:30px">82%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px"><span
+              style="font-size:11px;color:var(--w40);width:80px">Operations</span>
+            <div class="bar-bg" style="flex:1;height:8px">
+              <div class="bar" style="width:76%;background:var(--purple)"></div>
+            </div><span style="font-size:11px;color:var(--purple);width:30px">76%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px"><span
+              style="font-size:11px;color:var(--w40);width:80px">Finance</span>
+            <div class="bar-bg" style="flex:1;height:8px">
+              <div class="bar" style="width:71%;background:var(--pink)"></div>
+            </div><span style="font-size:11px;color:var(--pink);width:30px">71%</span>
+          </div>
+        </div>
+      </div>
+      <!-- Thrust distribution pills -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <div class="pill" style="background:rgba(99,102,241,.15);color:var(--indigo)">Revenue 35%</div>
+        <div class="pill" style="background:rgba(6,182,212,.15);color:var(--cyan)">Quality 25%</div>
+        <div class="pill" style="background:rgba(16,185,129,.15);color:var(--em)">Safety 20%</div>
+        <div class="pill" style="background:rgba(168,85,247,.15);color:var(--purple)">People 12%</div>
+        <div class="pill" style="background:rgba(236,72,153,.15);color:var(--pink)">Cost 8%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 8 — SCORE COMPUTATION ENGINE
+═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="orb" style="width:300px;height:300px;right:-60px;top:-80px;background:var(--cyan);opacity:.12"></div>
+    <div class="orb" style="width:260px;height:260px;left:-40px;bottom:-40px;background:var(--indigo);opacity:.1"></div>
+    <div class="ab" style="background:var(--em)"></div>
+
+    <div class="fp">
+      <p class="lbl" style="color:var(--em)">Scoring Engine</p>
+      <div class="divider" style="background:var(--em)"></div>
+      <h2 class="h2" style="margin-bottom:6px">BRD Score Computation</h2>
+      <p class="sub" style="font-size:12px;margin-bottom:18px">4 intelligent formulas. Real-time. Zero manual
+        calculation.</p>
+
+      <div class="g2" style="gap:12px">
+        <div class="card" style="border-top:3px solid var(--em)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:22px">📈</span>
+            <div>
+              <p style="font-size:13px;font-weight:700;color:var(--w)">Min — Higher is Better</p>
+              <span class="pill" style="background:rgba(16,185,129,.12);color:var(--em);font-size:9px">Revenue · Growth
+                KPIs</span>
+            </div>
+          </div>
+          <div style="background:rgba(16,185,129,.08);border-radius:8px;padding:8px 12px;margin-bottom:8px">
+            <p style="font-size:12px;font-weight:700;color:var(--em);font-family:monospace">Score = (Actual ÷ Target) ×
+              100</p>
+          </div>
+          <p class="sub" style="font-size:11px">Target: ₹42L · Actual: ₹47L → <strong style="color:var(--em)">Score:
+              111.9</strong></p>
+          <div class="bar-bg" style="height:6px;margin-top:8px">
+            <div class="bar" style="width:89%;background:var(--em)"></div>
+          </div>
+        </div>
+
+        <div class="card" style="border-top:3px solid var(--cyan)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:22px">📉</span>
+            <div>
+              <p style="font-size:13px;font-weight:700;color:var(--w)">Max — Lower is Better</p>
+              <span class="pill" style="background:rgba(6,182,212,.12);color:var(--cyan);font-size:9px">Quality · Defect
+                Rate KPIs</span>
+            </div>
+          </div>
+          <div style="background:rgba(6,182,212,.08);border-radius:8px;padding:8px 12px;margin-bottom:8px">
+            <p style="font-size:12px;font-weight:700;color:var(--cyan);font-family:monospace">Score = (Target ÷ Actual)
+              × 100</p>
+          </div>
+          <p class="sub" style="font-size:11px">Target: 5 defects · Actual: 3 → <strong style="color:var(--cyan)">Score:
+              166.7</strong></p>
+          <div class="bar-bg" style="height:6px;margin-top:8px">
+            <div class="bar" style="width:100%;background:var(--cyan)"></div>
+          </div>
+        </div>
+
+        <div class="card" style="border-top:3px solid var(--purple)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:22px">📅</span>
+            <div>
+              <p style="font-size:13px;font-weight:700;color:var(--w)">Timeline — On-time Delivery</p>
+              <span class="pill" style="background:rgba(168,85,247,.12);color:var(--purple);font-size:9px">Project
+                Milestones</span>
+            </div>
+          </div>
+          <div style="background:rgba(168,85,247,.08);border-radius:8px;padding:8px 12px;margin-bottom:8px">
+            <p style="font-size:11px;font-weight:700;color:var(--purple);font-family:monospace">Score = 100 − ((A − T) ÷
+              T) × 100</p>
+          </div>
+          <p class="sub" style="font-size:11px">Due: Day 30 · Delivered: Day 33 → <strong
+              style="color:var(--purple)">Score: 90</strong></p>
+          <div class="bar-bg" style="height:6px;margin-top:8px">
+            <div class="bar" style="width:90%;background:var(--purple)"></div>
+          </div>
+        </div>
+
+        <div class="card" style="border-top:3px solid var(--pink)">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:22px">🛡️</span>
+            <div>
+              <p style="font-size:13px;font-weight:700;color:var(--w)">Zero — Compliance</p>
+              <span class="pill" style="background:rgba(236,72,153,.12);color:var(--pink);font-size:9px">Safety ·
+                Zero-tolerance KPIs</span>
+            </div>
+          </div>
+          <div style="background:rgba(236,72,153,.08);border-radius:8px;padding:8px 12px;margin-bottom:8px">
+            <p style="font-size:12px;font-weight:700;color:var(--pink);font-family:monospace">Score = Actual === 0 ? 100
+              : 0</p>
+          </div>
+          <p class="sub" style="font-size:11px">Safety Incidents: 0 → <strong style="color:var(--pink)">Score: 100
+              (Perfect)</strong></p>
+          <div class="bar-bg" style="height:6px;margin-top:8px">
+            <div class="bar" style="width:100%;background:var(--pink)"></div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);border-radius:8px;padding:10px 16px;margin-top:12px;text-align:center">
+        <p style="font-size:13px;font-weight:700;color:var(--em);font-family:monospace">Overall Score = Σ (Goal Score ×
+          Weightage) ÷ 100</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 9 — ROLE-BASED EXPERIENCE
+═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="orb" style="width:360px;height:280px;left:30%;top:-80px;background:var(--indigo);opacity:.1"></div>
+    <div class="ab" style="background:var(--indigo)"></div>
+
+    <div class="fp">
+      <p class="lbl" style="color:var(--indigo)">User Roles</p>
+      <div class="divider" style="background:var(--indigo)"></div>
+      <h2 class="h2" style="margin-bottom:6px">Built for Everyone in the Organisation</h2>
+      <p class="sub" style="font-size:12px;margin-bottom:18px">3 distinct roles. Tailored experiences. One unified
+        platform.</p>
+
+      <div class="g3" style="gap:14px">
+        <!-- Employee -->
+        <div class="card" style="border-top:3px solid var(--cyan)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div
+              style="width:44px;height:44px;border-radius:50%;background:rgba(6,182,212,.15);display:flex;align-items:center;justify-content:center;font-size:22px">
+              👤</div>
+            <div>
+              <p style="font-size:15px;font-weight:700;color:var(--w)">Employee</p>
+              <span class="pill" style="background:rgba(6,182,212,.12);color:var(--cyan);font-size:9px">Create → Track →
+                Review</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <p style="font-size:11px;color:var(--w80)">• Create up to 8 goals per cycle</p>
+            <p style="font-size:11px;color:var(--w80)">• Select thrust area &amp; Unit of Measure</p>
+            <p style="font-size:11px;color:var(--w80)">• Input quarterly actual achievements</p>
+            <p style="font-size:11px;color:var(--w80)">• Track personal progress &amp; BRD score</p>
+            <p style="font-size:11px;color:var(--w80)">• View locked approved goals</p>
+            <p style="font-size:11px;color:var(--w80)">• Receive email &amp; Teams notifications</p>
+          </div>
+        </div>
+
+        <!-- Manager -->
+        <div class="card" style="border-top:3px solid var(--indigo)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div
+              style="width:44px;height:44px;border-radius:50%;background:rgba(99,102,241,.15);display:flex;align-items:center;justify-content:center;font-size:22px">
+              👥</div>
+            <div>
+              <p style="font-size:15px;font-weight:700;color:var(--w)">Manager (L1)</p>
+              <span class="pill" style="background:rgba(99,102,241,.12);color:var(--indigo);font-size:9px">Review →
+                Approve → Check-in</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <p style="font-size:11px;color:var(--w80)">• Approve or return goals with comments</p>
+            <p style="font-size:11px;color:var(--w80)">• Inline edit targets &amp; weightages</p>
+            <p style="font-size:11px;color:var(--w80)">• Push shared KPIs to entire team</p>
+            <p style="font-size:11px;color:var(--w80)">• Conduct structured quarterly check-ins</p>
+            <p style="font-size:11px;color:var(--w80)">• Add feedback with audit trail entry</p>
+            <p style="font-size:11px;color:var(--w80)">• View full team dashboard &amp; scores</p>
+          </div>
+        </div>
+
+        <!-- Admin -->
+        <div class="card" style="border-top:3px solid var(--purple)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div
+              style="width:44px;height:44px;border-radius:50%;background:rgba(168,85,247,.15);display:flex;align-items:center;justify-content:center;font-size:22px">
+              🔐</div>
+            <div>
+              <p style="font-size:15px;font-weight:700;color:var(--w)">Admin / HR</p>
+              <span class="pill" style="background:rgba(168,85,247,.12);color:var(--purple);font-size:9px">Configure →
+                Monitor → Govern</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <p style="font-size:11px;color:var(--w80)">• Configure goal cycles &amp; periods</p>
+            <p style="font-size:11px;color:var(--w80)">• Manage org hierarchy &amp; roles</p>
+            <p style="font-size:11px;color:var(--w80)">• Access full immutable audit trail</p>
+            <p style="font-size:11px;color:var(--w80)">• View &amp; resolve escalation logs</p>
+            <p style="font-size:11px;color:var(--w80)">• Unlock goals for exception flows</p>
+            <p style="font-size:11px;color:var(--w80)">• Export full achievement reports (CSV)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 10 — PRISM GLASS DESIGN SYSTEM
+═══════════════════════════════════════════════════ -->
+  <section class="slide" style="flex-direction:row">
+    <div class="orb" style="width:340px;height:340px;left:-80px;top:-80px;background:var(--indigo);opacity:.18"></div>
+    <div class="orb" style="width:280px;height:280px;right:-40px;bottom:-40px;background:var(--purple);opacity:.14">
+    </div>
+    <div class="orb" style="width:200px;height:200px;left:45%;top:40%;background:var(--cyan);opacity:.08"></div>
+    <div class="ab" style="background:var(--pink)"></div>
+
+    <div class="lp">
+      <p class="lbl" style="color:var(--pink)">Design System</p>
+      <div class="divider" style="background:var(--pink)"></div>
+      <h2 class="h2">"PRISM Glass"</h2>
+      <p class="sub" style="margin-top:12px;font-size:12px">Enterprise software, reimagined. Glassmorphic UI that makes
+        performance management feel premium.</p>
+
+      <!-- Color swatches -->
+      <div style="margin-top:18px">
+        <p style="font-size:10px;color:var(--w40);margin-bottom:8px;text-transform:uppercase;letter-spacing:2px">Color
+          Palette</p>
+        <div style="display:flex;gap:6px">
+          <div style="flex:1;height:32px;border-radius:6px;background:var(--indigo)" title="#6366F1"></div>
+          <div style="flex:1;height:32px;border-radius:6px;background:var(--purple)" title="#A855F7"></div>
+          <div style="flex:1;height:32px;border-radius:6px;background:var(--cyan)" title="#06B6D4"></div>
+          <div style="flex:1;height:32px;border-radius:6px;background:var(--em)" title="#10B981"></div>
+          <div style="flex:1;height:32px;border-radius:6px;background:var(--pink)" title="#EC4899"></div>
+          <div style="flex:1;height:32px;border-radius:6px;background:#1a1b2e;border:1px solid var(--gb)"
+            title="#03050A"></div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:4px">
+          <p style="flex:1;font-size:8px;color:var(--w40);text-align:center">#6366F1</p>
+          <p style="flex:1;font-size:8px;color:var(--w40);text-align:center">#A855F7</p>
+          <p style="flex:1;font-size:8px;color:var(--w40);text-align:center">#06B6D4</p>
+          <p style="flex:1;font-size:8px;color:var(--w40);text-align:center">#10B981</p>
+          <p style="flex:1;font-size:8px;color:var(--w40);text-align:center">#EC4899</p>
+          <p style="flex:1;font-size:8px;color:var(--w40);text-align:center">#03050A</p>
+        </div>
+      </div>
+
+      <!-- Typography -->
+      <div style="margin-top:16px">
+        <p style="font-size:10px;color:var(--w40);margin-bottom:8px;text-transform:uppercase;letter-spacing:2px">
+          Typography</p>
+        <p style="font-size:18px;font-weight:900;color:var(--w)">Inter Bold 900</p>
+        <p style="font-size:14px;font-weight:600;color:var(--w80)">Inter Semi Bold 600</p>
+        <p style="font-size:12px;font-weight:400;color:var(--w40)">Inter Regular 400</p>
+        <p style="font-size:10px;font-weight:600;color:var(--indigo);letter-spacing:3px;text-transform:uppercase">
+          TRACKING · UPPERCASE</p>
+      </div>
+    </div>
+
+    <div class="rp" style="justify-content:center">
+      <div class="g2" style="gap:10px">
+        <div class="card" style="border-left:3px solid var(--indigo)">
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Glassmorphism</p>
+          <p class="sub" style="font-size:11px">backdrop-filter: blur(24px)<br>+ gradient border glow on hover</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--purple)">
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Micro-Animations</p>
+          <p class="sub" style="font-size:11px">Spring transitions · 0.6s<br>custom cubic-bezier easing</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--cyan)">
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Ambient Orbs</p>
+          <p class="sub" style="font-size:11px">3 neon spheres · blur(80px)<br>floating on infinite keyframes</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--em)">
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:4px">Status Coding</p>
+          <p class="sub" style="font-size:11px">Color-adaptive progress bars<br>inner-glow status pills</p>
+        </div>
+      </div>
+      <!-- Component preview -->
+      <div class="card" style="padding:14px">
+        <p style="font-size:10px;color:var(--w40);margin-bottom:8px">Component Preview</p>
+        <div
+          style="background:rgba(255,255,255,.04);border:1px solid var(--gb);border-radius:8px;padding:10px 14px;border-left:4px solid var(--indigo);margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <p style="font-size:12px;font-weight:700;color:var(--w)">Revenue Growth 15%</p>
+            <span class="pill" style="background:rgba(16,185,129,.15);color:var(--em);font-size:9px">✓ On Track</span>
+          </div>
+          <div class="bar-bg" style="height:6px;margin-top:8px">
+            <div class="bar" style="width:70%;background:linear-gradient(90deg,var(--indigo),var(--em))"></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <div class="pill"
+            style="background:rgba(99,102,241,.2);color:var(--indigo);border:1px solid rgba(99,102,241,.4)">Approved ✓
+          </div>
+          <div class="pill" style="background:rgba(6,182,212,.2);color:var(--cyan);border:1px solid rgba(6,182,212,.4)">
+            On Track →</div>
+          <div class="pill"
+            style="background:rgba(236,72,153,.2);color:var(--pink);border:1px solid rgba(236,72,153,.4)">Pending !
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 11 — TECH STACK
+═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="orb" style="width:340px;height:300px;right:-60px;top:-60px;background:var(--cyan);opacity:.12"></div>
+    <div class="orb" style="width:260px;height:260px;left:-40px;bottom:-40px;background:var(--indigo);opacity:.10">
+    </div>
+    <div class="ab" style="background:var(--cyan)"></div>
+
+    <div class="fp">
+      <p class="lbl" style="color:var(--cyan)">Tech Stack</p>
+      <div class="divider" style="background:var(--cyan)"></div>
+      <h2 class="h2" style="margin-bottom:4px">Modern. Scalable. Free.</h2>
+      <p class="sub" style="font-size:12px;margin-bottom:16px">100% free-tier stack — production-ready, zero infra cost.
+      </p>
+
+      <div class="g4" style="gap:10px">
+        <div class="card" style="border-left:3px solid var(--indigo);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">Next.js 14</p>
+          <p style="font-size:10px;color:var(--indigo);margin-bottom:4px">Framework</p>
+          <p class="sub" style="font-size:10px">App Router · SSR · API Routes</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--cyan);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">React 18</p>
+          <p style="font-size:10px;color:var(--cyan);margin-bottom:4px">UI Library</p>
+          <p class="sub" style="font-size:10px">Server Components · Hooks</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--indigo);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">TypeScript 5</p>
+          <p style="font-size:10px;color:var(--indigo);margin-bottom:4px">Language</p>
+          <p class="sub" style="font-size:10px">Strict mode · Full-stack types</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--purple);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">Prisma ORM</p>
+          <p style="font-size:10px;color:var(--purple);margin-bottom:4px">Data Layer</p>
+          <p class="sub" style="font-size:10px">12-model schema · Type-safe</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--em);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">SQLite</p>
+          <p style="font-size:10px;color:var(--em);margin-bottom:4px">Database</p>
+          <p class="sub" style="font-size:10px">→ PostgreSQL in 1 line</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--cyan);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">Zod</p>
+          <p style="font-size:10px;color:var(--cyan);margin-bottom:4px">Validation</p>
+          <p class="sub" style="font-size:10px">Client + Server validation</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--pink);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">NextAuth</p>
+          <p style="font-size:10px;color:var(--pink);margin-bottom:4px">Auth</p>
+          <p class="sub" style="font-size:10px">Azure AD + Sessions</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--indigo);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">Recharts</p>
+          <p style="font-size:10px;color:var(--indigo);margin-bottom:4px">Visualization</p>
+          <p class="sub" style="font-size:10px">Area · Pie · Bar charts</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--em);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">Resend</p>
+          <p style="font-size:10px;color:var(--em);margin-bottom:4px">Email</p>
+          <p class="sub" style="font-size:10px">Notifications &amp; reminders</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--purple);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">Zustand</p>
+          <p style="font-size:10px;color:var(--purple);margin-bottom:4px">State</p>
+          <p class="sub" style="font-size:10px">Lightweight global state</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--cyan);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">XLSX</p>
+          <p style="font-size:10px;color:var(--cyan);margin-bottom:4px">Export</p>
+          <p class="sub" style="font-size:10px">Excel / CSV report engine</p>
+        </div>
+        <div class="card" style="border-left:3px solid var(--w);padding:12px 14px">
+          <p style="font-size:13px;font-weight:700;color:var(--w)">Vercel</p>
+          <p style="font-size:10px;color:var(--w40);margin-bottom:4px">Hosting</p>
+          <p class="sub" style="font-size:10px">Zero-config deployment</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:10px;height:10px;background:var(--indigo);border-radius:2px"></div><span
+            style="font-size:10px;color:var(--w40)">Frontend</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:10px;height:10px;background:var(--purple);border-radius:2px"></div><span
+            style="font-size:10px;color:var(--w40)">Backend</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:10px;height:10px;background:var(--em);border-radius:2px"></div><span
+            style="font-size:10px;color:var(--w40)">Data</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:10px;height:10px;background:var(--cyan);border-radius:2px"></div><span
+            style="font-size:10px;color:var(--w40)">Services</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div style="width:10px;height:10px;background:var(--pink);border-radius:2px"></div><span
+            style="font-size:10px;color:var(--w40)">Auth</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 12 — ESCALATION ENGINE
+═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="orb" style="width:360px;height:280px;right:-60px;top:-40px;background:var(--pink);opacity:.12"></div>
+    <div class="orb" style="width:280px;height:280px;left:-40px;bottom:-40px;background:var(--purple);opacity:.10">
+    </div>
+    <div class="ab" style="background:var(--pink)"></div>
+
+    <div class="fp">
+      <p class="lbl" style="color:var(--pink)">Governance</p>
+      <div class="divider" style="background:var(--pink)"></div>
+      <h2 class="h2" style="margin-bottom:4px">Escalation &amp; Compliance Engine</h2>
+      <p class="sub" style="font-size:12px;margin-bottom:18px">Automated accountability — no missed deadlines, no hidden
+        blockers.</p>
+
+      <div class="g3" style="gap:12px">
+        <!-- L1 -->
+        <div class="card" style="border-top:3px solid var(--cyan)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div
+              style="width:48px;height:48px;border-radius:50%;border:2px solid var(--cyan);display:flex;align-items:center;justify-content:center">
+              <span style="font-size:16px;font-weight:900;color:var(--cyan)">L1</span>
+            </div>
+            <div>
+              <p style="font-size:13px;font-weight:700;color:var(--w)">Employee Reminder</p>
+              <p style="font-size:10px;color:var(--w40)">Triggered after 3 days</p>
+            </div>
+          </div>
+          <p class="sub" style="font-size:11px;margin-bottom:10px">Automated notification to employee to submit goals or
+            update actuals.</p>
+          <div style="background:rgba(6,182,212,.08);border-radius:6px;padding:8px 12px">
+            <p style="font-size:10px;color:var(--cyan)">📧 Email via Resend</p>
+            <p style="font-size:10px;color:var(--cyan)">💬 MS Teams Adaptive Card</p>
+            <p style="font-size:10px;color:var(--w40);margin-top:4px">Target: Employee</p>
+          </div>
+        </div>
+
+        <!-- L2 -->
+        <div class="card" style="border-top:3px solid var(--purple)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div
+              style="width:48px;height:48px;border-radius:50%;border:2px solid var(--purple);display:flex;align-items:center;justify-content:center">
+              <span style="font-size:16px;font-weight:900;color:var(--purple)">L2</span>
+            </div>
+            <div>
+              <p style="font-size:13px;font-weight:700;color:var(--w)">Manager Escalation</p>
+              <p style="font-size:10px;color:var(--w40)">Triggered after 7 days</p>
+            </div>
+          </div>
+          <p class="sub" style="font-size:11px;margin-bottom:10px">Alert escalated to direct manager. Action required
+            within 24 hours.</p>
+          <div style="background:rgba(168,85,247,.08);border-radius:6px;padding:8px 12px">
+            <p style="font-size:10px;color:var(--purple)">📧 Email via Resend</p>
+            <p style="font-size:10px;color:var(--purple)">💬 MS Teams Adaptive Card</p>
+            <p style="font-size:10px;color:var(--w40);margin-top:4px">Target: Direct Manager</p>
+          </div>
+        </div>
+
+        <!-- L3 -->
+        <div class="card" style="border-top:3px solid var(--pink)">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+            <div
+              style="width:48px;height:48px;border-radius:50%;border:2px solid var(--pink);display:flex;align-items:center;justify-content:center">
+              <span style="font-size:16px;font-weight:900;color:var(--pink)">L3</span>
+            </div>
+            <div>
+              <p style="font-size:13px;font-weight:700;color:var(--w)">HR + Skip-level</p>
+              <p style="font-size:10px;color:var(--w40)">Triggered after 14 days</p>
+            </div>
+          </div>
+          <p class="sub" style="font-size:11px;margin-bottom:10px">Escalation reaches HR Business Partner and skip-level
+            manager. Compliance flag raised.</p>
+          <div style="background:rgba(236,72,153,.08);border-radius:6px;padding:8px 12px">
+            <p style="font-size:10px;color:var(--pink)">📧 Email + 💬 Teams</p>
+            <p style="font-size:10px;color:var(--pink)">🚨 Compliance Flag Raised</p>
+            <p style="font-size:10px;color:var(--w40);margin-top:4px">Target: HR + Skip-level Mgr</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trigger types -->
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <div class="card" style="flex:1;padding:10px 14px;text-align:center">
+          <p style="font-size:10px;color:var(--w40)">Trigger 1</p>
+          <p style="font-size:12px;font-weight:600;color:var(--w)">Goals not submitted in time</p>
+        </div>
+        <div class="card" style="flex:1;padding:10px 14px;text-align:center">
+          <p style="font-size:10px;color:var(--w40)">Trigger 2</p>
+          <p style="font-size:12px;font-weight:600;color:var(--w)">Manager approval overdue</p>
+        </div>
+        <div class="card" style="flex:1;padding:10px 14px;text-align:center">
+          <p style="font-size:10px;color:var(--w40)">Trigger 3</p>
+          <p style="font-size:12px;font-weight:600;color:var(--w)">Quarterly check-in missed</p>
+        </div>
+      </div>
+      <div
+        style="background:rgba(236,72,153,.06);border:1px solid rgba(236,72,153,.25);border-radius:8px;padding:10px 16px;margin-top:10px;text-align:center">
+        <p style="font-size:11px;color:var(--w40)">All escalations logged in an <strong
+            style="color:var(--pink)">immutable audit trail</strong> with before/after JSON snapshots — tamper-proof
+          compliance evidence.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 13 — KEY DIFFERENTIATORS
+═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="orb" style="width:360px;height:280px;left:30%;top:-80px;background:var(--em);opacity:.08"></div>
+    <div class="orb" style="width:240px;height:240px;right:-40px;bottom:-40px;background:var(--indigo);opacity:.10">
+    </div>
+    <div class="ab" style="background:var(--em)"></div>
+
+    <div class="fp">
+      <p class="lbl" style="color:var(--em)">Differentiators</p>
+      <div class="divider" style="background:var(--em)"></div>
+      <h2 class="h2" style="margin-bottom:4px">Why PRISM Wins</h2>
+      <p class="sub" style="font-size:12px;margin-bottom:16px">6 innovations that no off-the-shelf HR tool offers.</p>
+
+      <div class="g3" style="gap:10px">
+        <div class="card" style="border-top:3px solid var(--indigo)">
+          <p style="font-size:11px;font-weight:900;color:rgba(99,102,241,.3);margin-bottom:6px">01</p>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Live BRD Scoring Engine</p>
+          <p class="sub" style="font-size:11px">All 4 formulas computed client-side in real-time. Employees see scores
+            update as they type — instant feedback loop.</p>
+          <span class="pill"
+            style="background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:var(--indigo);font-size:9px;margin-top:8px">PRISM
+            Exclusive</span>
+        </div>
+        <div class="card" style="border-top:3px solid var(--purple)">
+          <p style="font-size:11px;font-weight:900;color:rgba(168,85,247,.3);margin-bottom:6px">02</p>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">"PRISM Glass" Design System</p>
+          <p class="sub" style="font-size:11px">Bespoke glassmorphic UI with ambient orbs, spring animations, and neon
+            glows. Enterprise software that feels premium.</p>
+          <span class="pill"
+            style="background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.3);color:var(--purple);font-size:9px;margin-top:8px">PRISM
+            Exclusive</span>
+        </div>
+        <div class="card" style="border-top:3px solid var(--cyan)">
+          <p style="font-size:11px;font-weight:900;color:rgba(6,182,212,.3);margin-bottom:6px">03</p>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Circular Weightage Tracker</p>
+          <p class="sub" style="font-size:11px">Animated SVG ring fills dynamically as weights are entered. Turns
+            compliance validation into delightful UX.</p>
+          <span class="pill"
+            style="background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.3);color:var(--cyan);font-size:9px;margin-top:8px">PRISM
+            Exclusive</span>
+        </div>
+        <div class="card" style="border-top:3px solid var(--em)">
+          <p style="font-size:11px;font-weight:900;color:rgba(16,185,129,.3);margin-bottom:6px">04</p>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Shared Goal Engine</p>
+          <p class="sub" style="font-size:11px">Manager-driven KPI push to multiple employees simultaneously. Team
+            alignment enforced at the platform level.</p>
+          <span class="pill"
+            style="background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:var(--em);font-size:9px;margin-top:8px">PRISM
+            Exclusive</span>
+        </div>
+        <div class="card" style="border-top:3px solid var(--pink)">
+          <p style="font-size:11px;font-weight:900;color:rgba(236,72,153,.3);margin-bottom:6px">05</p>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Multi-level Escalation Automation
+          </p>
+          <p class="sub" style="font-size:11px">L1 → L2 → L3 escalation with rule-based triggers, email + Teams
+            notifications, and automatic audit logging.</p>
+          <span class="pill"
+            style="background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.3);color:var(--pink);font-size:9px;margin-top:8px">PRISM
+            Exclusive</span>
+        </div>
+        <div class="card" style="border-top:3px solid var(--indigo)">
+          <p style="font-size:11px;font-weight:900;color:rgba(99,102,241,.3);margin-bottom:6px">06</p>
+          <p style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:6px">Azure AD SSO Simulation</p>
+          <p class="sub" style="font-size:11px">Pixel-perfect Microsoft Entra ID login recreation. Drop-in real auth
+            with a 1-line NextAuth config change.</p>
+          <span class="pill"
+            style="background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);color:var(--indigo);font-size:9px;margin-top:8px">PRISM
+            Exclusive</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 14 — ROADMAP
+═══════════════════════════════════════════════════ -->
+  <section class="slide">
+    <div class="orb" style="width:360px;height:280px;left:30%;top:-60px;background:var(--indigo);opacity:.09"></div>
+    <div class="orb" style="width:240px;height:240px;right:-40px;bottom:-40px;background:var(--em);opacity:.10"></div>
+    <div class="ab" style="background:var(--purple)"></div>
+
+    <div class="fp">
+      <p class="lbl" style="color:var(--purple)">Roadmap</p>
+      <div class="divider" style="background:var(--purple)"></div>
+      <h2 class="h2" style="margin-bottom:4px">From Hackathon to Enterprise</h2>
+      <p class="sub" style="font-size:12px;margin-bottom:16px">1-line config changes. Production-ready by design.</p>
+
+      <div class="g3" style="gap:14px">
+        <!-- Phase 1 -->
+        <div class="card" style="border-top:3px solid var(--em)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span class="pill" style="background:rgba(16,185,129,.15);color:var(--em)">✅ COMPLETE</span>
+            <span style="font-size:10px;color:var(--w40)">Now</span>
+          </div>
+          <p style="font-size:14px;font-weight:700;color:var(--w);margin-bottom:10px">Hackathon MVP</p>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <p style="font-size:11px;color:var(--w80)">✓ Next.js 14 + TypeScript</p>
+            <p style="font-size:11px;color:var(--w80)">✓ SQLite + Prisma ORM</p>
+            <p style="font-size:11px;color:var(--w80)">✓ Mock Azure AD SSO</p>
+            <p style="font-size:11px;color:var(--w80)">✓ Full BRD compliance</p>
+            <p style="font-size:11px;color:var(--w80)">✓ 3-phase E2E flow</p>
+            <p style="font-size:11px;color:var(--w80)">✓ Analytics dashboard</p>
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="card" style="border-top:3px solid var(--cyan)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span class="pill" style="background:rgba(6,182,212,.15);color:var(--cyan)">⟩ NEXT</span>
+            <span style="font-size:10px;color:var(--w40)">Month 1</span>
+          </div>
+          <p style="font-size:14px;font-weight:700;color:var(--w);margin-bottom:10px">Production v1.0</p>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <p style="font-size:11px;color:var(--w80)">→ SQLite → PostgreSQL</p>
+            <p style="font-size:11px;color:var(--w80)">→ Real Azure AD via NextAuth</p>
+            <p style="font-size:11px;color:var(--w80)">→ Live Resend email delivery</p>
+            <p style="font-size:11px;color:var(--w80)">→ Real MS Teams webhooks</p>
+            <p style="font-size:11px;color:var(--w80)">→ Vercel deployment</p>
+            <p style="font-size:11px;color:var(--w80)">→ Role-based auth hardening</p>
+          </div>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="card" style="border-top:3px solid var(--purple)">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <span class="pill" style="background:rgba(168,85,247,.15);color:var(--purple)">◎ PLANNED</span>
+            <span style="font-size:10px;color:var(--w40)">Q2</span>
+          </div>
+          <p style="font-size:14px;font-weight:700;color:var(--w);margin-bottom:10px">Enterprise v2.0</p>
+          <div style="display:flex;flex-direction:column;gap:5px">
+            <p style="font-size:11px;color:var(--w80)">→ HRIS integration (Workday/SAP)</p>
+            <p style="font-size:11px;color:var(--w80)">→ Mobile responsive UI</p>
+            <p style="font-size:11px;color:var(--w80)">→ Multi-org tenancy</p>
+            <p style="font-size:11px;color:var(--w80)">→ ML-powered insights</p>
+            <p style="font-size:11px;color:var(--w80)">→ Power BI connector</p>
+            <p style="font-size:11px;color:var(--w80)">→ SSO federation</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:10px 20px;margin-top:14px;text-align:center">
+        <p style="font-size:12px;font-weight:700;color:var(--em)">Total Infrastructure Cost for MVP: <span
+            style="font-size:18px">$0 / month</span> &nbsp;·&nbsp; Next.js free &nbsp;·&nbsp; Vercel free tier
+          &nbsp;·&nbsp; Resend free tier &nbsp;·&nbsp; SQLite zero-cost</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════
+     SLIDE 15 — CALL TO ACTION
+═══════════════════════════════════════════════════ -->
+  <section class="slide"
+    style="align-items:center;justify-content:center;background:linear-gradient(135deg,#03050a 0%,#0d0f1e 50%,#03050a 100%)">
+    <div class="orb" style="width:400px;height:400px;left:-120px;top:-120px;background:var(--indigo);opacity:.22"></div>
+    <div class="orb" style="width:340px;height:340px;right:-80px;bottom:-60px;background:var(--purple);opacity:.18">
+    </div>
+    <div class="orb" style="width:300px;height:300px;left:50%;bottom:-80px;background:var(--cyan);opacity:.10"></div>
+    <div class="ab" style="background:linear-gradient(90deg,var(--indigo),var(--purple),var(--cyan))"></div>
+    <div
+      style="position:absolute;bottom:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--em))">
+    </div>
+
+    <div style="position:relative;z-index:2;text-align:center;padding:40px">
+      <div
+        style="display:inline-block;background:var(--glass);border:1px solid var(--gb);border-radius:20px;padding:5px 22px;margin-bottom:24px">
+        <span class="lbl" style="color:var(--indigo)">Ready to Demo</span>
+      </div>
+      <h1 style="font-size:72px;font-weight:900;color:var(--w);letter-spacing:-2px;line-height:.95;margin-bottom:18px">
+        Experience PRISM.</h1>
+      <p
+        style="font-size:17px;color:var(--w40);line-height:1.7;margin-bottom:32px;max-width:680px;margin-left:auto;margin-right:auto">
+        The only goal management platform built with performance, beauty,<br>and enterprise-grade governance at its
+        core.
+      </p>
+
+      <!-- CTA buttons -->
+      <div style="display:flex;gap:12px;justify-content:center;margin-bottom:28px">
+        <div style="background:var(--indigo);border-radius:28px;padding:12px 36px">
+          <p style="font-size:15px;font-weight:700;color:var(--w)">Run Live Demo →</p>
+        </div>
+        <div style="background:var(--glass);border:1px solid var(--gb);border-radius:28px;padding:12px 36px">
+          <p style="font-size:15px;font-weight:600;color:var(--w80)">View on GitHub</p>
+        </div>
+      </div>
+
+      <!-- Quick start -->
+      <div
+        style="background:var(--glass);border:1px solid var(--gb);border-radius:10px;padding:12px 28px;display:inline-block;margin-bottom:32px">
+        <p style="font-size:11px;color:var(--w40);margin-bottom:4px">Quick Start</p>
+        <p style="font-size:13px;font-weight:600;color:var(--cyan);font-family:monospace">git clone → npm install → npx
+          prisma db push → npm run dev</p>
+        <p style="font-size:11px;color:var(--w40);margin-top:4px">Opens at localhost:3000 · Login:
+          rohan.jain@company.com</p>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:flex;gap:10px;justify-content:center">
+        <div
+          style="background:var(--glass);border:1px solid var(--gb);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px">
+          <p style="font-size:26px;font-weight:900;color:var(--w)">3</p>
+          <p style="font-size:10px;color:var(--w40)">User Roles</p>
+        </div>
+        <div
+          style="background:var(--glass);border:1px solid var(--gb);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px">
+          <p style="font-size:26px;font-weight:900;color:var(--w)">12</p>
+          <p style="font-size:10px;color:var(--w40)">DB Models</p>
+        </div>
+        <div
+          style="background:var(--glass);border:1px solid var(--gb);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px">
+          <p style="font-size:26px;font-weight:900;color:var(--w)">4</p>
+          <p style="font-size:10px;color:var(--w40)">BRD Formulas</p>
+        </div>
+        <div
+          style="background:var(--glass);border:1px solid var(--gb);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px">
+          <p style="font-size:26px;font-weight:900;color:var(--em)">100%</p>
+          <p style="font-size:10px;color:var(--w40)">Phase Coverage</p>
+        </div>
+        <div
+          style="background:var(--glass);border:1px solid var(--gb);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px">
+          <p style="font-size:26px;font-weight:900;color:var(--em)">$0</p>
+          <p style="font-size:10px;color:var(--w40)">Infra Cost</p>
+        </div>
+        <div
+          style="background:var(--glass);border:1px solid var(--gb);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px">
+          <p style="font-size:26px;font-weight:900;color:var(--purple)">∞</p>
+          <p style="font-size:10px;color:var(--w40)">Scalability</p>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;height:1px;background:var(--gb);width:400px;margin-left:auto;margin-right:auto"></div>
+      <p style="font-size:11px;color:var(--w20);margin-top:14px">AtomQuest Hackathon 1.0 · PRISM Portal · Built by Rohan
+        Jain</p>
+      <p style="font-size:10px;color:rgba(255,255,255,.12);margin-top:4px">Next.js 14 · TypeScript · Prisma · SQLite ·
+        Recharts · NextAuth · Resend</p>
+    </div>
+  </section>
+
+</body>
+
+</html>

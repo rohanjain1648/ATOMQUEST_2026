@@ -2,11 +2,15 @@ export const dynamic = 'force-dynamic';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Target, TrendingUp, Clock, ArrowRight } from 'lucide-react';
+import { cookies } from 'next/headers';
 
 export default async function GoalsPage() {
+  const cookieStore = cookies();
+  const userId = cookieStore.get('prism_user_id')?.value || 'emp-priya';
+
   // Fetch real data from database
   const sheet = await prisma.goalSheet.findFirst({
-    where: { userId: 'emp-priya' },
+    where: { userId },
     include: {
       goals: { include: { achievements: true }, orderBy: { createdAt: 'asc' } },
       cycle: true,
