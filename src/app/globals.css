@@ -68,7 +68,7 @@ body {
   color: #ffffff;
   font-family: var(--font-primary);
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   position: relative;
   -webkit-font-smoothing: antialiased;
 }
